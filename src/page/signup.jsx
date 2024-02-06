@@ -99,7 +99,8 @@ const Signup = () => {
         },
         body: JSON.stringify(userData),
       });
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      const res = await data.json();
+      localStorage.setItem("userInfo", JSON.stringify(res));
       if (data.status == 201) {
         setOpen(true);
         setTimeout(() => {
@@ -129,8 +130,8 @@ const Signup = () => {
         },
         body: JSON.stringify(userData),
       });
-
-      localStorage.setItem("userInfo", JSON.stringify(data));
+        const res = await data.json();
+      localStorage.setItem("userInfo", JSON.stringify(res));
       if (data.status == 400) {
         console.log("400");
         setLoginAlertExist(true);

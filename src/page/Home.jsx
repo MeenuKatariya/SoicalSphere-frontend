@@ -7,8 +7,9 @@ export default function Home() {
   return (
     <>
       <Routes>
-        <Route path="/auth" Component={Signup} />
+        {/* <Route path="/" Component={Signup} /> */}
       </Routes>
+     
     </>
   );
 }
