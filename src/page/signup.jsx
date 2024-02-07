@@ -133,7 +133,6 @@ const Signup = () => {
         const res = await data.json();
       localStorage.setItem("userInfo", JSON.stringify(res));
       if (data.status == 400) {
-        console.log("400");
         setLoginAlertExist(true);
       } else if (data.status == 200) {
         setLoginAlertExist(false);
