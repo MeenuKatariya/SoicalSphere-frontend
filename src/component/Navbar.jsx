@@ -59,7 +59,7 @@ const Navbar = () => {
         </div>
       </div>
     </Box>
-      <PostCreate handleOpen= {createPostModal}   />
+      <PostCreate handleOpen= {createPostModal}  handleClose={ setCreatePostModal}  />
     </div>
   );
 };

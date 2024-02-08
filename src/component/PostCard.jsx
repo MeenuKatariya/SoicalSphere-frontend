@@ -6,24 +6,15 @@ import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import CancelIcon from "@mui/icons-material/Cancel";
 import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
 import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
 import { FaRegCommentDots } from "react-icons/fa6";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Box, Divider, Modal } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const PostCard = () => {
   const { user } = useContext(LoginContext);
   const [allPost, setAllPost] = useState([]);
-  const [allCommentShow, setAllCommentShow] = useState(false);
-  const [storeComment, setStoreComment] = useState([]);
   const { token } = JSON.parse(localStorage.getItem("userInfo"));
 
   const getPost = async () => {
@@ -31,8 +22,6 @@ const PostCard = () => {
       const data = await fetch("http://localhost:5000/allPost");
       const res = await data.json();
       setAllPost(res);
-
-      console.log({ res });
     } catch (err) {
       console.log(err);
     }
@@ -98,16 +87,6 @@ const PostCard = () => {
     }
   };
 
-  const getComment = async () => {
-    try {
-      const data = await fetch("http://localhost:5000/allComment");
-      const res = await data.json();
-      setStoreComment(res);
-      // console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   useEffect(() => {
     getPost();
     getComment();
@@ -115,75 +94,6 @@ const PostCard = () => {
 
   return (
     <div>
-      {/* <Modal
-        sx={{
-          top: 130,
-          width: "500px",
-          margin: "auto",
-         
-        }}
-        open={allCommentShow}
-        onClose={() => setAllCommentShow(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box >
-          {storeComment
-            ? storeComment.map((comment) => {
-                const {
-                  count = 0,
-                  list = [],
-                  text = [],
-                  timestamp = "",
-                } = comment || {};
-
-                const firstLetterCapital = list.map((list) => {
-                  const firstLetter = list.username.charAt(0).toUpperCase();
-                  return firstLetter;
-                });
-
-                const capitalName = list.map((list) => {
-                  const capital =
-                    list.username.charAt(0).toUpperCase() +
-                    list.username.slice(1);
-                  return capital;
-                });
-
-                const textComment = text.map((text) => {
-                  return text;
-                });
-                const date = new Date(timestamp);
-                const day = date.toLocaleString("en-us", { weekday: "long" });
-                const month = date.toLocaleString("en-us", { month: "long" });
-                const year = date.getFullYear();
-                const dayOfMonth = date.getDate();
-
-                return (
-                  <Card >
-                    {firstLetterCapital.map((letter) => {
-                      return (
-                        <CardHeader
-                          avatar={<Avatar aria-label="recipe">{letter}</Avatar>}
-                          sx={{ textAlign: "left" }}
-                          title={capitalName}
-                          subheader={
-                            <Typography
-                              sx={{ color: "#121212", fontSize: "14px" }}
-                            >
-                              {text}
-                            </Typography>
-                           
-                          }
-                        />
-                      );
-                    })}
-                  </Card>
-                );
-              })
-            : " "}
-        </Box>
-      </Modal> */}
-
       <div className="containerCardPost">
         <div className="cardPost">
           {allPost ? (
@@ -282,13 +192,7 @@ const PostCard = () => {
                     <div className="likeCommentText">
                       <div>{likesCount} Likes</div>
                       <div
-                        onClick={() => {
-                          if (commentsCount == 0) {
-                            setAllCommentShow(false);
-                          } else {
-                            setAllCommentShow(true);
-                          }
-                        }}
+                     
                       >
                         {" "}
                         {commentsCount == 0 ? (

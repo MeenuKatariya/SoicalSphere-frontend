@@ -20,7 +20,6 @@ export function LoginContextProvider({ children }) {
           },
         });
         let data = await res.json();
-        console.log(data)
         if (data.token) {
           setUser({token:data.token, decode:data.decoded});
           return;
@@ -30,7 +29,6 @@ export function LoginContextProvider({ children }) {
       console.log(error);
     }
   };
- console.log(user)
   useEffect(() => {
     checkUser(token);
   }, []);

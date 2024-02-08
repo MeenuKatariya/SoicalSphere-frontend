@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Divider, TextField } from "@mui/material";
+import { Divider, TextField, Snackbar, Alert } from "@mui/material";
 import { IoMdImages } from "react-icons/io";
+
 import makeStyles from "@mui/styles/makeStyles";
+import { LoginContext } from "../context/loginContext";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -31,24 +34,62 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PostCreate = ({ handleOpen }) => {
+const PostCreate = ({ handleOpen, handleClose }) => {
   const classes = useStyles();
+  const { user } = useContext(LoginContext);
   const [pic, setPic] = useState();
   const [picloading, setPicLoading] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [postCreateSuccess, setPostCreateSuccess] = useState(false);
+  const { token = {}, decode: { id: userId = "" } = {} } = user || {};
+  console.log(userId);
+  const [state, setState] = useState({
+    vertical: "top",
+    horizontal: "right",
+  });
+  const { vertical, horizontal } = state;
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setPostCreateSuccess(false);
+    
+  };
+
+
+  const postCreate = async () => {
+      if(!pic || !caption){
+        setPostCreateSuccess(false)
+        return
+      } 
+
+    const postData = {
+      userId: userId,
+      post: pic,
+      caption: caption,
+    };
+     
+    try {
+      await fetch("http://localhost:5000/addPost", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          token: token,
+        },
+        body: JSON.stringify(postData),
+      });
+      setPostCreateSuccess(true)
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const postDetails = (pics) => {
     setPicLoading(true);
     if (pics === undefined) {
-      //   toast({
-      //     title: "Please Select an Image!",
-      //     status: "warning",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "bottom",
-      //   });
-      //   return;
+      return;
     }
-    console.log(pics);
+
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
@@ -61,7 +102,6 @@ const PostCreate = ({ handleOpen }) => {
         .then((res) => res.json())
         .then((data) => {
           setPic(data.url.toString());
-          console.log(data.url.toString());
           setPicLoading(false);
         })
         .catch((err) => {
@@ -69,20 +109,28 @@ const PostCreate = ({ handleOpen }) => {
           setPicLoading(false);
         });
     } else {
-      //   toast({
-      //     title: "Please Select an Image!",
-      //     status: "warning",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "bottom",
-      //   });
       setPicLoading(false);
       return;
     }
   };
-  console.log(handleOpen);
   return (
     <div>
+        <Snackbar
+        open={postCreateSuccess}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical, horizontal }}
+        key={vertical + horizontal}
+        onClose={handleCloseAlert}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Post Created Sucessfully
+        </Alert>
+      </Snackbar>
       <Modal
         sx={{
           top: 130,
@@ -90,7 +138,10 @@ const PostCreate = ({ handleOpen }) => {
           margin: "auto",
         }}
         open={handleOpen}
-        onClose={!handleOpen}
+        onClose={() => {
+          handleClose(false);
+          setPostCreateSuccess(false);
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -102,38 +153,53 @@ const PostCreate = ({ handleOpen }) => {
           <div className="ImageIcon">
             <IoMdImages />
           </div>
-          <div className="modalInputDiv">
-            <TextField
+          <div>
+            <input
+              className="custom-file-input"
               type="file"
               accept="image/*"
-              sx={{ bgcolor: "#f5f5f5", borderRadius: "5px" }}
               onChange={(e) => {
                 postDetails(e.target.files[0]);
               }}
             />
-            <br />
+
             <div
               style={{
-               
-                width: "330px",
+                width: "340px",
                 alignItems: "center",
                 margin: "auto",
                 marginTop: "30px",
               }}
             >
               <TextField
-                sx={{ input: { color: '#f5f5f5' } }}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                sx={{ input: { color: "#f5f5f5" } }}
                 InputLabelProps={{
-                    sx: {
-                      color: "#f5f5f5",
-                    },
-                  }}
-                  className={classes.root}
+                  sx: {
+                    color: "#f5f5f5",
+                  },
+                }}
+                className={classes.root}
                 fullWidth
                 label=" Add Caption"
                 variant="outlined"
               />
             </div>
+            <Button
+            onClick={() => postCreate()}
+              variant="outlined"
+              sx={{
+                border: "1px solid #f5f5f5",
+                marginTop: "25px",
+                color: "#f5f5f5",
+                ":hover": {
+                  borderColor: " #f5f5f5",
+                },
+              }}
+            >
+              Upload
+            </Button>
           </div>
         </Box>
       </Modal>
