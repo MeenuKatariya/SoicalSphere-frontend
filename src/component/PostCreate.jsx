@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Divider, TextField, Snackbar, Alert } from "@mui/material";
 import { IoMdImages } from "react-icons/io";
-
 import makeStyles from "@mui/styles/makeStyles";
 import { LoginContext } from "../context/loginContext";
 
@@ -56,8 +55,10 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   };
 
   const postCreate = async () => {
+    setPicLoading(true);
     if (!pic || !caption) {
       setPostCreateSuccess(false);
+      setPicLoading(false);
       return;
     }
 
@@ -77,6 +78,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         body: JSON.stringify(postData),
       });
       setPostCreateSuccess(true);
+      setPicLoading(false)
       setCaption("");
       setPic("");
     } catch (err) {
@@ -87,7 +89,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   const postDetails = (pics) => {
     setPicLoading(true);
     if (pics === undefined) {
-      return;
+      return
     }
 
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
@@ -123,7 +125,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         onClose={handleCloseAlert}
       >
         <Alert
-          onClose={handleCloseAlert}
+          onClose={() => {handleCloseAlert();  handleClose(false)}}
           severity="success"
           variant="filled"
           sx={{ width: "100%" }}
@@ -187,6 +189,8 @@ const PostCreate = ({ handleOpen, handleClose }) => {
               />
             </div>
             <Button
+              loading={picloading}
+            //  isLoading={picloading}
               onClick={() => postCreate()}
               variant="outlined"
               sx={{

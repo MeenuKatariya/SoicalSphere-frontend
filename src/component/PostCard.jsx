@@ -23,7 +23,7 @@ const PostCard = () => {
     try {
       const data = await fetch("http://localhost:5000/allPost");
       const res = await data.json();
-      setAllPost(res);
+      setAllPost(res)
     } catch (err) {
       console.log(err);
     }
@@ -39,11 +39,13 @@ const PostCard = () => {
         <div className="cardPost">
           {allPost ? (
             allPost.map((posts = {}) => {
-              return <CardSinglePost
-                allPost={allPost}
-                setAllPost={setAllPost}
-                posts={posts}
-              />;
+              return (
+                <CardSinglePost
+                  allPost={allPost}
+                  setAllPost={setAllPost}
+                  posts={posts}
+                />
+              );
             })
           ) : (
             <diV>No Post</diV>

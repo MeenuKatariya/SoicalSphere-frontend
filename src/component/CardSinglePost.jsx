@@ -14,10 +14,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Divider, IconButton } from "@mui/material";
+import { Divider, IconButton, Popover } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const CardSinglePost = ({ allPost, setAllPost, posts }) => {
+  const [deletePost, setDeletePost] = useState(false);
   const { user } = useContext(LoginContext);
   const { decode: { id: loggedInUserId = "" } = {}, token = "" } = user || {};
   const {
@@ -58,7 +60,6 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
 
   const [commentModal, setCommentModal] = useState(false);
   const [comment, setComment] = useState("");
-  //   const { token } = JSON.parse(localStorage.getItem("userInfo"));
 
   const postLike = async (id) => {
     const updatedAllPosts = [...allPost];
@@ -121,6 +122,35 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
         commentsList.length + 1;
       setAllPost(updatedAllPosts);
       setComment("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const postDelete = async (id) => {
+    const updatedAllPosts = [...allPost];
+    const { decode: { id: loggedInUserId = "" } = {}, decode = {} } =
+      user || {};
+    const clickedPostIndex = updatedAllPosts.findIndex(
+      ({ _id: postId }) => id === postId
+    );
+
+    try {
+      const data = await fetch("http://localhost:5000/deletePost", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          token: token,
+        },
+        body: JSON.stringify({ postId: id }),
+      });
+   
+     const newPost = updatedAllPosts.filter((posts) =>
+          posts._id !== id
+      )
+      setAllPost(newPost)
+       
+   
     } catch (err) {
       console.log(err);
     }
@@ -202,6 +232,7 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
           sx={{
             top: 130,
             width: "400px",
+            height: "400px",
             margin: "auto",
             bgcolor: "1px solid #262626",
           }}
@@ -255,11 +286,37 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
                       </div>
                     );
                   })
-                : ""}
+                :  <Typography variant="h6" sx={{color:"#f5f5f5"}}>
+                  No Comment
+              </Typography>}
             </Card>
           </Box>
         </Modal>
-
+        <Modal
+          //   id={id}
+          open={deletePost}
+          //   anchorEl={anchorEl}
+          onClose={() => setDeletePost(false)}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          style={{
+            top: "30%",
+            cursor: "pointer",
+            left: "58%",
+            width: "150px",
+            borderRadius: "10px",
+            textAlign: "center",
+            height: "60px",
+            backgroundColor: "#262626",
+            color: "#f5f5f5",
+          }}
+        >
+          <Typography  onClick={() => {
+                  setDeletePost(true); postDelete(_id);
+                }} sx={{ p: 2 }}>Delete Post</Typography>
+        </Modal>
         <Card
           key={_id}
           sx={{
@@ -273,6 +330,15 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
         >
           <CardHeader
             avatar={<Avatar aria-label="recipe">{firstLetter}</Avatar>}
+            action={
+              <IconButton
+               onClick={()=> setDeletePost(true)}
+                sx={{ color: "#f5f5f5" }}
+                aria-label="settings"
+              >
+                <MoreVertIcon />
+              </IconButton>
+            }
             sx={{
               textAlign: "left",
               paddingLeft: "0px",
@@ -321,7 +387,12 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             <div>
               <FaRegCommentDots
                 onClick={() => {
-                  setCommentModal(true);
+                   if(commentsCount == 0){
+                    setCommentModal(false)
+                   }else{
+                    setCommentModal(true);
+                   }
+                  
                 }}
               />
             </div>
@@ -331,7 +402,8 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             <div>
               {" "}
               {commentsCount == 0 ? (
-                "No Comments"
+                <div onClick ={()=> setCommentModal(false)}>No Comments</div>
+            
               ) : (
                 <div
                   onClick={() => {
@@ -353,7 +425,7 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
                 placeholder="Add a comment..."
               />
               {comment ? (
-                <button onClick={() => postComment(_id)}>Post</button>
+                <Button onClick={() => postComment(_id)}>Post</Button>
               ) : null}
             </div>
           ) : (
