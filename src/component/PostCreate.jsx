@@ -42,7 +42,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   const [caption, setCaption] = useState("");
   const [postCreateSuccess, setPostCreateSuccess] = useState(false);
   const { token = {}, decode: { id: userId = "" } = {} } = user || {};
-  console.log(userId);
+
   const [state, setState] = useState({
     vertical: "top",
     horizontal: "right",
@@ -53,22 +53,20 @@ const PostCreate = ({ handleOpen, handleClose }) => {
       return;
     }
     setPostCreateSuccess(false);
-    
   };
 
-
   const postCreate = async () => {
-      if(!pic || !caption){
-        setPostCreateSuccess(false)
-        return
-      } 
+    if (!pic || !caption) {
+      setPostCreateSuccess(false);
+      return;
+    }
 
     const postData = {
       userId: userId,
       post: pic,
       caption: caption,
     };
-     
+
     try {
       await fetch("http://localhost:5000/addPost", {
         method: "POST",
@@ -78,7 +76,9 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         },
         body: JSON.stringify(postData),
       });
-      setPostCreateSuccess(true)
+      setPostCreateSuccess(true);
+      setCaption("");
+      setPic("");
     } catch (err) {
       console.log(err);
     }
@@ -115,7 +115,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   };
   return (
     <div>
-        <Snackbar
+      <Snackbar
         open={postCreateSuccess}
         autoHideDuration={2000}
         anchorOrigin={{ vertical, horizontal }}
@@ -187,7 +187,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
               />
             </div>
             <Button
-            onClick={() => postCreate()}
+              onClick={() => postCreate()}
               variant="outlined"
               sx={{
                 border: "1px solid #f5f5f5",
