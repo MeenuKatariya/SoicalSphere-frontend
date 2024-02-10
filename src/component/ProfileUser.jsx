@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ProfileUser = () => {
+const ProfileUser = ({ profileModal, setProfileModal}) => {
   return (
     <div>
-      
+       vbcbgn
     </div>
   )
 }

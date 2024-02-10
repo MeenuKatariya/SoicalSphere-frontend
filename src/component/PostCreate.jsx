@@ -78,7 +78,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         body: JSON.stringify(postData),
       });
       setPostCreateSuccess(true);
-      setPicLoading(false)
+      setPicLoading(false);
       setCaption("");
       setPic("");
     } catch (err) {
@@ -89,7 +89,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   const postDetails = (pics) => {
     setPicLoading(true);
     if (pics === undefined) {
-      return
+      return;
     }
 
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
@@ -125,7 +125,10 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         onClose={handleCloseAlert}
       >
         <Alert
-          onClose={() => {handleCloseAlert();  handleClose(false)}}
+          onClose={() => {
+            handleCloseAlert();
+            handleClose(false);
+          }}
           severity="success"
           variant="filled"
           sx={{ width: "100%" }}
@@ -190,7 +193,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
             </div>
             <Button
               loading={picloading}
-            //  isLoading={picloading}
+              //  isLoading={picloading}
               onClick={() => postCreate()}
               variant="outlined"
               sx={{
