@@ -14,41 +14,27 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import CardSinglePost from "./CardSinglePost";
 
 const PostCard = () => {
-  const { user } = useContext(LoginContext);
-  const [allPost, setAllPost] = useState([]);
-  const [comment, setComment] = useState("");
-  const { token } = JSON.parse(localStorage.getItem("userInfo"));
-
-  const getPost = async () => {
-    try {
-      const data = await fetch("http://localhost:5000/allPost");
-      const res = await data.json();
-      setAllPost(res)
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getPost();
-  }, []);
-
+  const { allPost } = useContext(LoginContext);
   return (
     <div>
       <div className="containerCardPost">
         <div className="cardPost">
-          {allPost ? (
-            allPost.map((posts = {}) => {
-              return (
-                <CardSinglePost
-                  allPost={allPost}
-                  setAllPost={setAllPost}
-                  posts={posts}
-                />
-              );
+          {allPost.length ? (
+            allPost.map((posts = {}, id = "") => {
+              return <CardSinglePost posts={posts} key={posts.id} />;
             })
           ) : (
-            <diV>No Post</diV>
+            <div
+              style={{
+                color: "#f5f5f5",
+                border: "1px solid #262626",
+                textAlign: "center",
+                fontSize: "20px",
+                padding: "10px",
+              }}
+            >
+              Upload Post
+            </div>
           )}
         </div>
       </div>

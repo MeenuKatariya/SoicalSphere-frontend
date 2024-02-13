@@ -12,22 +12,31 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PostCreate from "./PostCreate";
 import ProfileUser from "./ProfileUser";
+import { useNavigate } from "react-router-dom";
+import { LoginContext } from "../context/loginContext";
 
 const Navbar = () => {
   const [createPostModal, setCreatePostModal] = useState(false);
-  const [ profileModal, setProfileModal] = useState(false);
+
+  const { user,setUser } = useContext(LoginContext);
+  const { decode: { id: loggedInUserId = "", username = "" } = {}, token = "" } = user || {};
+  const [profileModal, setProfileModal] = useState(false);
   const handleOpen = () => setCreatePostModal(true);
   const [modalProfileLogout, setModalProfileLogout] = useState(false);
   const handleClose = () => setCreatePostModal(false);
-
-  
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(!token){
+      navigate("/")
+    }
+  })
   return (
     <div>
       <Modal
@@ -51,9 +60,9 @@ const Navbar = () => {
         >
           <List sx={{ textAlign: "center" }}>
             <ListItem disablePadding>
-              <ListItemButton  >
+              <ListItemButton>
                 <ListItemText
-                onClick={() => {setProfileModal(true)}}
+                  onClick={() => { setModalProfileLogout(false) ;navigate("/profile");}}
                   primary="Profile"
                   sx={{ cursor: "pointer", textAlign: "center" }}
                 />
@@ -61,11 +70,16 @@ const Navbar = () => {
             </ListItem>
             <Divider style={{ backgroundColor: "#262626" }} />
             <ListItem disablePadding>
-              <ListItemButton component="a" href="#simple-list">
-                <ListItemText
-                  primary="Logout"
-                  sx={{ cursor: "pointer", textAlign: "center" }}
-                />
+              <ListItemButton component="a" >
+                <ListItemText onClick={()=> {
+                  localStorage.removeItem("userInfo")
+                  setModalProfileLogout(false) 
+                  setUser({token:"", decoded:{} });
+                  navigate("/")
+                }}
+                  
+                  style={{ cursor: "pointer", textAlign: "center" }}
+                > Logout</ListItemText>
               </ListItemButton>
             </ListItem>
           </List>
@@ -73,11 +87,11 @@ const Navbar = () => {
       </Modal>
       <Box className="Navbar">
         <div className="textSocial">
-          <div>Social Sphere</div>
+          <div style={{cursor:'pointer'}} onClick={()=> navigate("/post")}>Social Sphere</div>
         </div>
         <div className="NavbarOtherSearch">
           <div className="SearchInput">
-            <SearchIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} />
+            {/* <SearchIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} /> */}
             <input
               placeholder="Search..."
               style={{ borderBottom: "1px solid #f5f5f5" }}
@@ -87,7 +101,7 @@ const Navbar = () => {
           <div className="socialNavbar">
             <div className="messageIcon">
               <Tooltip arrow title="Message">
-                <IconButton className="hovericon">
+                <IconButton >
                   <SendIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} />
                 </IconButton>
               </Tooltip>
@@ -99,7 +113,7 @@ const Navbar = () => {
               }}
             >
               <Tooltip arrow title="Create Post">
-                <IconButton className="hovericon">
+                <IconButton >
                   <AddCircleOutlineIcon
                     sx={{ color: "#f5f5f5", cursor: "pointer" }}
                   />
@@ -108,7 +122,7 @@ const Navbar = () => {
             </div>
             <div className="messageIcon">
               <Tooltip arrow title="Profile">
-                <IconButton className="hovericon">
+                <IconButton >
                   <AccountCircleIcon
                     onClick={() => setModalProfileLogout(true)}
                     sx={{ color: "#f5f5f5", cursor: "pointer" }}
@@ -123,7 +137,7 @@ const Navbar = () => {
         handleOpen={createPostModal}
         handleClose={setCreatePostModal}
       />
-      <ProfileUser profileModal={profileModal} setProfileModal={setProfileModal} />
+     
     </div>
   );
 };

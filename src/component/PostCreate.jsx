@@ -7,6 +7,7 @@ import { Divider, TextField, Snackbar, Alert } from "@mui/material";
 import { IoMdImages } from "react-icons/io";
 import makeStyles from "@mui/styles/makeStyles";
 import { LoginContext } from "../context/loginContext";
+import { Circles } from "react-loader-spinner";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PostCreate = ({ handleOpen, handleClose }) => {
   const classes = useStyles();
-  const { user } = useContext(LoginContext);
+  const { user, allPost, setAllPost } = useContext(LoginContext);
   const [pic, setPic] = useState();
   const [picloading, setPicLoading] = useState(false);
   const [caption, setCaption] = useState("");
@@ -55,6 +56,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   };
 
   const postCreate = async () => {
+    
     setPicLoading(true);
     if (!pic || !caption) {
       setPostCreateSuccess(false);
@@ -69,7 +71,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
     };
 
     try {
-      await fetch("http://localhost:5000/addPost", {
+     const data = await fetch("http://localhost:5000/addPost", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -77,6 +79,9 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         },
         body: JSON.stringify(postData),
       });
+      const result = await data.json();
+    // console.log({result})
+      setAllPost([...allPost,result])
       setPostCreateSuccess(true);
       setPicLoading(false);
       setCaption("");
@@ -133,7 +138,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          Post Created Sucessfully
+          Post Created Successfully
         </Alert>
       </Snackbar>
       <Modal
@@ -167,7 +172,6 @@ const PostCreate = ({ handleOpen, handleClose }) => {
                 postDetails(e.target.files[0]);
               }}
             />
-
             <div
               style={{
                 width: "340px",
@@ -191,22 +195,40 @@ const PostCreate = ({ handleOpen, handleClose }) => {
                 variant="outlined"
               />
             </div>
-            <Button
-              loading={picloading}
-              //  isLoading={picloading}
-              onClick={() => postCreate()}
-              variant="outlined"
-              sx={{
-                border: "1px solid #f5f5f5",
-                marginTop: "25px",
-                color: "#f5f5f5",
-                ":hover": {
-                  borderColor: " #f5f5f5",
-                },
-              }}
-            >
-              Upload
-            </Button>
+
+            {picloading ? (
+              <div style={{ marginTop: "30px", marginLeft: "315px" }}>
+                <Circles
+                  height="20"
+                  width="20"
+                  left="50"
+                  color="#f5f5f5"
+                  ariaLabel="circles-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={picloading}
+                />
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  postCreate();
+                  handleClose(false);
+                }}
+                style={{
+                  border: "1px solid #f5f5f5",
+                  marginTop: "25px",
+                  color: "#f5f5f5",
+                  backgroundColor: "#262626",
+                  padding: "10px 20px 10px 20px",
+                  fontSize: "15px",
+                  borderRadius: "5px",
+                  display: picloading ? "none" : "inline",
+                }}
+              >
+                Upload
+              </button>
+            )}
           </div>
         </Box>
       </Modal>

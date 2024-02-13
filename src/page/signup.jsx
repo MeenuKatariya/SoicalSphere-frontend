@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Typography, Grid, Button, Alert, Snackbar } from "@mui/material";
 import "../css/signup.css";
 import { TextField, Box } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useNavigate } from "react-router-dom";
+
+import { LoginContext } from "../context/loginContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Signup = () => {
   const [activeForm, setActiveForm] = useState("signup");
+
   const classes = useStyles();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -39,6 +42,7 @@ const Signup = () => {
   const [loginAlertExist, setLoginAlertExist] = useState(false);
   const [loginPasswordAlert, setLoginPasswordAlert] = useState(false);
   const [signupExistAlert, setSignupExistAlert] = useState(false);
+
   const [state, setState] = useState({
     vertical: "top",
     horizontal: "right",
@@ -72,15 +76,22 @@ const Signup = () => {
     email: "",
   });
 
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("userInfo")) || [];
+    console.log("yes")
+    if (token) {
+      navigate("/post");
+    }
+  }, [navigate]);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
     setLoginSuccess(false);
     setLoginAlertExist(false);
-    setLoginPasswordAlert(false)
+    setLoginPasswordAlert(false);
     setOpen(false);
-    setSignupExistAlert(false)
+    setSignupExistAlert(false);
   };
 
   const handleSignup = async (state) => {
@@ -100,17 +111,18 @@ const Signup = () => {
         body: JSON.stringify(userData),
       });
       const res = await data.json();
+      console.log(res);
       localStorage.setItem("userInfo", JSON.stringify(res));
-      if (data.status == 201) {
+
+      if (data.status == 200) {
         setOpen(true);
         setTimeout(() => {
           navigate("/post");
         }, 2000);
-      }else if(data.status == 404){
+      } else if (data.status == 404) {
         setSignupExistAlert(true);
-        setOpen(false)
+        setOpen(false);
       }
-    
     } catch (err) {
       console.log(err);
     }
@@ -130,16 +142,17 @@ const Signup = () => {
         },
         body: JSON.stringify(userData),
       });
-        const res = await data.json();
+      const res = await data.json();
       localStorage.setItem("userInfo", JSON.stringify(res));
+
       if (data.status == 400) {
         setLoginAlertExist(true);
       } else if (data.status == 200) {
         setLoginAlertExist(false);
         setLoginSuccess(true);
-        setInterval(()=>[
-          navigate("/post")
-        ], 2000)
+        setInterval(() => {
+          navigate("/post");
+        }, 2000);
       } else if (data.status == 401) {
         setLoginPasswordAlert(true);
         setLoginAlertExist(false);

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import SideDrawer from "../component/SideDrawer";
 import { Box, Card, Divider } from "@mui/material";
 import PostCard from "../component/PostCard";
@@ -10,23 +10,19 @@ import "../css/style.css";
 
 const Post = () => {
   const { user } = useContext(LoginContext);
+  const { token = "" } = user || {};
   const navigate = useNavigate();
-
+    
+ 
   return (
-    <>
-      {user ? (
-        <div className="postMainDiv">
-          <Navbar />
-          <Box className="postBox">
-            <SideDrawer />
-            <PostCard />
-            <MessageSearch />
-          </Box>
-        </div>
-      ) : (
-        navigate("/")
-      )}
-    </>
+    <div className="postMainDiv">
+       <Navbar />
+      <Box className="postBox">
+         <SideDrawer />
+         <PostCard />
+         <MessageSearch />
+      </Box>
+    </div>
   );
 };
 

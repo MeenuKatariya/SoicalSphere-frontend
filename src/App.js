@@ -1,24 +1,25 @@
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
-// import Home from "./page/Home";
 import { Route, Routes } from "react-router-dom";
 import Post from "./page/Post";
 import React, { useContext, useState } from "react";
 import Signup from "./page/signup";
-import { LoginContext } from "./context/loginContext";
 import ProfileUser from "./component/ProfileUser";
+import { useNavigate } from "react-router-dom";
+import Home from "./page/Home";
+import { LoginContext } from "./context/loginContext";
 
 export default function App() {
+  const navigate = useNavigate();
   const { user } = useContext(LoginContext);
-  const { token = {}, decode: { id: userId = "", name = "" } = {} } = user || {};
-  console.log(name)
+  const { token = "" } = user || {};
 
   return (
     <>
       <Routes>
-        <Route path="/" Component={Signup} exact />
-        <Route path="/post" Component={Post} />
-        <Route path={name} Component={ProfileUser} />
+        {token && <Route path="/post" Component={Post} />}
+        {!token && <Route path="/" Component={Signup} exact />}
+        {token && <Route path="/profile" Component={ProfileUser} />}
       </Routes>
     </>
   );

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { LoginContext } from "../context/loginContext";
 import { useNavigate } from "react-router-dom";
 import "../css/style.css";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -18,19 +17,19 @@ import { Divider, IconButton, Popover } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const CardSinglePost = ({ allPost, setAllPost, posts }) => {
-  const [deletePost, setDeletePost] = useState(false);
-  const { user } = useContext(LoginContext);
+const CardSinglePost = ({ posts }) => {
+  const { user, allPost, setAllPost } = useContext(LoginContext);
   const { decode: { id: loggedInUserId = "" } = {}, token = "" } = user || {};
   const {
     caption = "",
     comments: { count: commentsCount = 0, list: commentsList = [] } = {},
     post = "",
     likes: { count: likesCount = 0, list: likesList = [] } = {},
-    userId: { name = "" } = {},
+    userId: { name = "", _id: userId = "" } = {},
     timestamp = "",
     _id = "",
   } = posts || {};
+  console.log(userId);
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   const date = new Date(timestamp);
@@ -38,7 +37,6 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
   const month = date.toLocaleString("en-us", { month: "long" });
   const year = date.getFullYear();
   const dayOfMonth = date.getDate();
-  //   const { decode: { id: loggedInUserId = "" } = {} } = user || {};
   const alreadyComment = commentsList.map((comment) => {
     const {
       createdBy: { _id: commentedUserId = "", name: userName = "" } = {},
@@ -144,13 +142,9 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
         },
         body: JSON.stringify({ postId: id }),
       });
-   
-     const newPost = updatedAllPosts.filter((posts) =>
-          posts._id !== id
-      )
-      setAllPost(newPost)
-       
-   
+
+      const newPost = updatedAllPosts.filter((posts) => posts._id !== id);
+      setAllPost(newPost);
     } catch (err) {
       console.log(err);
     }
@@ -258,41 +252,45 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
                 boxShadow: "none",
               }}
             >
-              {showComment
-                ? showComment.map((userComment) => {
-                    return (
-                      <div className="modalCommentFlexUserDelete">
-                        <CardHeader
-                          avatar={
-                            <Avatar aria-label="recipe">
-                              {userComment.firstLetterComment}
-                            </Avatar>
-                          }
-                          title={
-                            <Typography variant="h6">
-                              {userComment.nameCapitalComment}
-                            </Typography>
-                          }
-                          subheader={
-                            <Typography>{userComment.comment}</Typography>
-                          }
-                        />
-                        <DeleteOutlineIcon
-                          onClick={() => {
-                            deleteComment(_id);
-                          }}
-                          style={{ paddingTop: "25px" }}
-                        />
-                      </div>
-                    );
-                  })
-                :  <Typography variant="h6" sx={{color:"#f5f5f5"}}>
+              {showComment ? (
+                showComment.map((userComment) => {
+                  return (
+                    <div className="modalCommentFlexUserDelete">
+                      <CardHeader
+                        avatar={
+                          <Avatar aria-label="recipe">
+                            {userComment.firstLetterComment}
+                          </Avatar>
+                        }
+                        title={
+                          <Typography variant="h6">
+                            {userComment.nameCapitalComment}
+                          </Typography>
+                        }
+                        subheader={
+                          <Typography>{userComment.comment}</Typography>
+                        }
+                      />
+                      <DeleteOutlineIcon
+                        onClick={() => {
+                          setCommentModal(false);
+                          deleteComment(_id);
+                        }}
+                        style={{ paddingTop: "25px" }}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                <Typography variant="h6" sx={{ color: "#f5f5f5" }}>
                   No Comment
-              </Typography>}
+                </Typography>
+              )}
             </Card>
           </Box>
         </Modal>
-        <Modal
+
+        {/* <Modal
           //   id={id}
           open={deletePost}
           //   anchorEl={anchorEl}
@@ -313,10 +311,16 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             color: "#f5f5f5",
           }}
         >
-          <Typography  onClick={() => {
-                  setDeletePost(true); postDelete(_id);
-                }} sx={{ p: 2 }}>Delete Post</Typography>
-        </Modal>
+          <Typography
+            onClick={() => {
+              setDeletePost(true);
+              postDelete(_id);
+            }}
+            sx={{ p: 2 }}
+          >
+            Delete Post
+          </Typography>
+        </Modal> */}
         <Card
           key={_id}
           sx={{
@@ -332,11 +336,15 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             avatar={<Avatar aria-label="recipe">{firstLetter}</Avatar>}
             action={
               <IconButton
-               onClick={()=> setDeletePost(true)}
                 sx={{ color: "#f5f5f5" }}
                 aria-label="settings"
+                style={{ display: loggedInUserId == userId ? "block" : "none" }}
               >
-                <MoreVertIcon />
+                <DeleteOutlineIcon
+                  onClick={() => {
+                    postDelete(_id);
+                  }}
+                />
               </IconButton>
             }
             sx={{
@@ -346,19 +354,24 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             }}
             subheader={
               <Typography
-                sx={{ color: "#f5f5f5" }}
+                sx={{ color: "#f5f5f5", fontSize: "12px" }}
               >{`${dayOfMonth} ${month} ${year}`}</Typography>
             }
-            title={<Typography variant="h6">{nameCapital}</Typography>}
+            title={
+              <Typography sx={{ fontSize: "20px" }}>{nameCapital}</Typography>
+            }
           />
-          <CardMedia
-            component="img"
-            sx={{ borderRadius: "10px" }}
-            image={post}
-            height="300px"
-            width="300px"
-            alt="image"
-          />
+          <div style={{ height: "400px", width: "100%" }}>
+            <CardMedia
+              component="img"
+              sx={{ borderRadius: "10px" }}
+              image={post}
+              height="100%"
+              width="100%"
+              style={{ objectFit: "cover" }}
+              alt="image"
+            />
+          </div>
           <div className="cardContent">
             <Typography
               variant="body2"
@@ -387,12 +400,11 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             <div>
               <FaRegCommentDots
                 onClick={() => {
-                   if(commentsCount == 0){
-                    setCommentModal(false)
-                   }else{
+                  if (commentsCount == 0) {
+                    setCommentModal(false);
+                  } else {
                     setCommentModal(true);
-                   }
-                  
+                  }
                 }}
               />
             </div>
@@ -402,8 +414,7 @@ const CardSinglePost = ({ allPost, setAllPost, posts }) => {
             <div>
               {" "}
               {commentsCount == 0 ? (
-                <div onClick ={()=> setCommentModal(false)}>No Comments</div>
-            
+                <div onClick={() => setCommentModal(false)}>No Comments</div>
               ) : (
                 <div
                   onClick={() => {
