@@ -5,7 +5,6 @@ import { Avatar, Box, Card, CardHeader, Typography } from "@mui/material";
 
 const SideDrawer = () => {
   const { user } = useContext(LoginContext);
-  console.log(user);
   const {
     decoded: {
       id: loggedInUserId = "",
@@ -17,7 +16,6 @@ const SideDrawer = () => {
     } = {},
     token = "",
   } = user || {};
-  console.log(followersList);
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   return (
@@ -55,7 +53,6 @@ const SideDrawer = () => {
           {followersList.length ? (
             followersList?.map((followedUser) => {
               const { name, profilePicture, username } = followedUser || {};
-              console.log(name);
               const firstLetter = name.charAt(0).toUpperCase();
               const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
               return (
@@ -107,7 +104,6 @@ const SideDrawer = () => {
           {followingList.length ? (
             followingList?.map((followingUser) => {
               const { name, profilePicture, username } = followingUser || {};
-              console.log(name);
               const firstLetter = name.charAt(0).toUpperCase();
               const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
               return (

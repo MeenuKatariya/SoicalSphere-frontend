@@ -102,7 +102,7 @@ const Signup = () => {
         password: passwordHandling.password,
       };
 
-      const data = await fetch("http://localhost:5000/registerUser", {
+      const data = await fetch("http://localhost:5000/user/registerUser", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -134,7 +134,7 @@ const Signup = () => {
         password: loginPasswordHandling.password,
       };
 
-      const data = await fetch("http://localhost:5000/login", {
+      const data = await fetch("http://localhost:5000/user/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",

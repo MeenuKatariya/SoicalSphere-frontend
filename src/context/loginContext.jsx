@@ -20,20 +20,16 @@ export function LoginContextProvider({ children }) {
   const checkUser = async (token) => {
     try {
       if (token) {
-        let res = await fetch("http://localhost:5000/checkUserByToken", {
+        let res = await fetch("http://localhost:5000/user/checkUserByToken", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             token: token,
           },
         });
-
         let data = await res.json();
-         const { decoded = {}, token: tokens = ""} = data || {}
-        console.log(data)
-        if (token) {
-
-          setUser(prevUser => {return {...prevUser, ...data, token, decoded }});
+        if (data.token) {
+          setUser({ token: data.token, decoded: data.decoded });
           return;
         }
       }
@@ -45,15 +41,16 @@ export function LoginContextProvider({ children }) {
     try {
       if (token) {
         const data = await fetch(
-          `http://localhost:5000/allPost?start=${start}&count=${count}`
+          `http://localhost:5000/post/allPost?start=${start}&count=${count}`
         );
         const res = await data.json();
-        setAllPost((prev) => [...prev, ...res]);
+        setAllPost(res);
+        console.log(res);
         if (res.length === 0) {
           setHasMore(false);
           return;
         }
-       
+
         setStart((prevPage) => prevPage + 1);
       }
     } catch (err) {

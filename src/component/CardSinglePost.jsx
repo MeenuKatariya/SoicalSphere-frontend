@@ -67,7 +67,7 @@ const CardSinglePost = ({ posts }) => {
     );
 
     try {
-      await fetch("http://localhost:5000/likePost", {
+      await fetch("http://localhost:5000/post/likePost", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -102,7 +102,7 @@ const CardSinglePost = ({ posts }) => {
     };
 
     try {
-      await fetch("http://localhost:5000/commentPost", {
+      await fetch("http://localhost:5000/post/commentPost", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -190,7 +190,7 @@ const CardSinglePost = ({ posts }) => {
     );
 
     try {
-      await fetch("http://localhost:5000/dislikePost", {
+      await fetch("http://localhost:5000/post/dislikePost", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",

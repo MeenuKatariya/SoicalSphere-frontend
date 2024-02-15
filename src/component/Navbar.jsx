@@ -50,7 +50,7 @@ const Navbar = () => {
 
   const searchApi = async () => {
     try {
-      const data = await fetch(`http://localhost:5000?search=${searchInput}`, {
+      const data = await fetch(`http://localhost:5000/user?search=${searchInput}`, {
         headers: {
           "Content-type": "application/json; charset=UTF-8",
           token: token,
