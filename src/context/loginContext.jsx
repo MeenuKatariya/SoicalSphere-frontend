@@ -1,9 +1,15 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 export const LoginContext = createContext();
 
 export function LoginContextProvider({ children }) {
   const navigate = useNavigate();
+  const [selectedChat, setSelectedChat] = useState();
+  const [notification, setNotification] = useState([]);
+  const [chats, setChats] = useState();
+  const [start, setStart] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const count = 5;
   const [user, setUser] = useState({
     token: "",
     decoded: {},
@@ -23,9 +29,11 @@ export function LoginContextProvider({ children }) {
         });
 
         let data = await res.json();
+         const { decoded = {}, token: tokens = ""} = data || {}
+        console.log(data)
+        if (token) {
 
-        if (data.token) {
-          setUser({ token: data.token, decode: data.decoded });
+          setUser(prevUser => {return {...prevUser, ...data, token, decoded }});
           return;
         }
       }
@@ -33,13 +41,20 @@ export function LoginContextProvider({ children }) {
       console.log(error);
     }
   };
-
   const getPost = async () => {
     try {
       if (token) {
-        const data = await fetch("http://localhost:5000/allPost");
+        const data = await fetch(
+          `http://localhost:5000/allPost?start=${start}&count=${count}`
+        );
         const res = await data.json();
-        setAllPost(res);
+        setAllPost((prev) => [...prev, ...res]);
+        if (res.length === 0) {
+          setHasMore(false);
+          return;
+        }
+       
+        setStart((prevPage) => prevPage + 1);
       }
     } catch (err) {
       console.log(err);
@@ -56,9 +71,24 @@ export function LoginContextProvider({ children }) {
   useEffect(() => {
     getPost();
   }, [token]);
-  
+
   return (
-    <LoginContext.Provider value={{ user, allPost, setAllPost, setUser }}>
+    <LoginContext.Provider
+      value={{
+        user,
+        allPost,
+        setAllPost,
+        setUser,
+        getPost,
+        hasMore,
+        selectedChat,
+        setSelectedChat,
+        notification,
+        setNotification,
+        chats,
+        setChats,
+      }}
+    >
       {children}
     </LoginContext.Provider>
   );

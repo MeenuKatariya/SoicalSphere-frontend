@@ -12,12 +12,24 @@ import FavoriteBorderSharpIcon from "@mui/icons-material/FavoriteBorderSharp";
 import { FaRegCommentDots } from "react-icons/fa6";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CardSinglePost from "./CardSinglePost";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { Circles } from "react-loader-spinner";
 
 const PostCard = () => {
-  const { allPost } = useContext(LoginContext);
+  const { allPost, getPost, hasMore } = useContext(LoginContext);
   return (
-    <div>
-      <div className="containerCardPost">
+    <div style={{ overflow: "hidden" }}>
+      <div id="scrollableDiv" className="containerCardPost">
+        {/* <InfiniteScroll 
+         dataLength={allPost.length}
+         next={getPost}
+         hasMore={hasMore}
+         loader={<h4>Loading...</h4>}
+         height={820}
+         endMessage={<p>No more posts to load</p>}
+
+         
+        > */}
         <div className="cardPost">
           {allPost.length ? (
             allPost.map((posts = {}, id = "") => {
@@ -36,6 +48,8 @@ const PostCard = () => {
               Upload Post
             </div>
           )}
+
+         
         </div>
       </div>
     </div>

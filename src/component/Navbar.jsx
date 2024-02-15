@@ -1,6 +1,9 @@
 import {
   AppBar,
+  Avatar,
   Box,
+  Card,
+  CardHeader,
   Divider,
   IconButton,
   List,
@@ -11,6 +14,7 @@ import {
   Modal,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,22 +25,43 @@ import PostCreate from "./PostCreate";
 import ProfileUser from "./ProfileUser";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../context/loginContext";
+import SearchUser from "./SearchUser";
+import ChatBox from "./ChatBox";
 
 const Navbar = () => {
   const [createPostModal, setCreatePostModal] = useState(false);
-
-  const { user,setUser } = useContext(LoginContext);
-  const { decode: { id: loggedInUserId = "", username = "" } = {}, token = "" } = user || {};
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const { user, setUser } = useContext(LoginContext);
+  const {
+    decode: { id: loggedInUserId = "", username = "" } = {},
+    token = "",
+  } = user || {};
   const [profileModal, setProfileModal] = useState(false);
   const handleOpen = () => setCreatePostModal(true);
   const [modalProfileLogout, setModalProfileLogout] = useState(false);
   const handleClose = () => setCreatePostModal(false);
   const navigate = useNavigate();
-  useEffect(()=>{
-    if(!token){
-      navigate("/")
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
     }
-  })
+  });
+
+  const searchApi = async () => {
+    try {
+      const data = await fetch(`http://localhost:5000?search=${searchInput}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          token: token,
+        },
+      });
+      const res = await data.json();
+      setSearchResult(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div>
       <Modal
@@ -62,7 +87,10 @@ const Navbar = () => {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemText
-                  onClick={() => { setModalProfileLogout(false) ;navigate("/profile");}}
+                  onClick={() => {
+                    setModalProfileLogout(false);
+                    navigate("/profile");
+                  }}
                   primary="Profile"
                   sx={{ cursor: "pointer", textAlign: "center" }}
                 />
@@ -70,16 +98,19 @@ const Navbar = () => {
             </ListItem>
             <Divider style={{ backgroundColor: "#262626" }} />
             <ListItem disablePadding>
-              <ListItemButton component="a" >
-                <ListItemText onClick={()=> {
-                  localStorage.removeItem("userInfo")
-                  setModalProfileLogout(false) 
-                  setUser({token:"", decoded:{} });
-                  navigate("/")
-                }}
-                  
+              <ListItemButton component="a">
+                <ListItemText
+                  onClick={() => {
+                    localStorage.removeItem("userInfo");
+                    setModalProfileLogout(false);
+                    setUser({ token: "", decoded: {} });
+                    navigate("/");
+                  }}
                   style={{ cursor: "pointer", textAlign: "center" }}
-                > Logout</ListItemText>
+                >
+                  {" "}
+                  Logout
+                </ListItemText>
               </ListItemButton>
             </ListItem>
           </List>
@@ -87,22 +118,32 @@ const Navbar = () => {
       </Modal>
       <Box className="Navbar">
         <div className="textSocial">
-          <div style={{cursor:'pointer'}} onClick={()=> navigate("/post")}>Social Sphere</div>
+          <div style={{ cursor: "pointer" }} onClick={() => navigate("/post")}>
+            Social Sphere
+          </div>
         </div>
         <div className="NavbarOtherSearch">
           <div className="SearchInput">
-            {/* <SearchIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} /> */}
             <input
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  searchApi();
+                }
+              }}
               placeholder="Search..."
-              style={{ borderBottom: "1px solid #f5f5f5" }}
             />
+            <SearchIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} />
           </div>
 
           <div className="socialNavbar">
             <div className="messageIcon">
               <Tooltip arrow title="Message">
-                <IconButton >
-                  <SendIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} />
+                <IconButton>
+                  <SendIcon onClick={()=>navigate("/chat")} sx={{ color: "#f5f5f5", cursor: "pointer" }} />
                 </IconButton>
               </Tooltip>
             </div>
@@ -113,7 +154,7 @@ const Navbar = () => {
               }}
             >
               <Tooltip arrow title="Create Post">
-                <IconButton >
+                <IconButton>
                   <AddCircleOutlineIcon
                     sx={{ color: "#f5f5f5", cursor: "pointer" }}
                   />
@@ -122,7 +163,7 @@ const Navbar = () => {
             </div>
             <div className="messageIcon">
               <Tooltip arrow title="Profile">
-                <IconButton >
+                <IconButton>
                   <AccountCircleIcon
                     onClick={() => setModalProfileLogout(true)}
                     sx={{ color: "#f5f5f5", cursor: "pointer" }}
@@ -137,7 +178,8 @@ const Navbar = () => {
         handleOpen={createPostModal}
         handleClose={setCreatePostModal}
       />
-     
+
+      <SearchUser searchResult={searchResult} searchInput={searchInput} />
     </div>
   );
 };

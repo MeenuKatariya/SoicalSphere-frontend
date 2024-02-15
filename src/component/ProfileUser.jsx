@@ -19,6 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ModalProfileUpdate from "./ModalProfileUpdate";
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -48,8 +49,10 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
     profilePic: false,
     boolean: false,
   });
-  const { user } = useContext(LoginContext);
+  
 
+  const { user } = useContext(LoginContext);
+//  console.log(user)
   const {
     decode: {
       id: loggedInUserId = "",
@@ -58,6 +61,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
       bio = "",
       followers: { count: followersCount = 0 } = {},
       following: { count: followingCount = 0 } = {},
+      profilePicture = ""
     } = {},
     token = "",
   } = user || {};
@@ -74,9 +78,8 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
         setEditProfileModal={setEditProfileModal}
       />
       <Box className="postBox">
-        <SideDrawer />
 
-        <div style={{ width: "500px" }}>
+        <div style={{ width: "500px", margin:"auto", marginTop:"50px" }}>
           <div
             style={{
               display: "flex",
@@ -84,6 +87,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
               margin: "auto",
               flexDirection: "row",
               justifyContent: "space-between",
+              border:"1px solid red"
             }}
           >
             <div
@@ -93,11 +97,12 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                 width: "150px",
                 cursor: "pointer",
                 position: "relative",
+               
               }}
             >
               <Avatar
                 alt={firstLetter}
-                src="/static/images/avatar/1.jpg"
+                src={profilePicture}
                 sx={{
                   height: "100%",
                   width: "100%",
@@ -123,7 +128,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                 <div
                   style={{
                     marginTop: "50px",
-                    marginLeft: "10px",
+                    marginLeft: "8px",
                     cursor: "pointer",
                   }}
                 >
@@ -188,7 +193,6 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
           </div>
           <Divider sx={{ bgColor: "#f5f5f5" }}></Divider>
         </div>
-        <MessageSearch />
       </Box>
     </div>
   );

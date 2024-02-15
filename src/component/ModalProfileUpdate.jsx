@@ -84,8 +84,9 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
         body: JSON.stringify(updatedData),
       });
       const res = await data.json();
+      console.log(res)
       localStorage.setItem("userInfo", JSON.stringify(res));
-      setUser([...user, res]);
+      setUser((prevUser) => [...prevUser, res]);
     } catch (err) {
       console.log(err);
     }

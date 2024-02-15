@@ -78,7 +78,6 @@ const Signup = () => {
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("userInfo")) || [];
-    console.log("yes")
     if (token) {
       navigate("/post");
     }
@@ -111,7 +110,7 @@ const Signup = () => {
         body: JSON.stringify(userData),
       });
       const res = await data.json();
-      console.log(res);
+      // console.log(res);
       localStorage.setItem("userInfo", JSON.stringify(res));
 
       if (data.status == 200) {

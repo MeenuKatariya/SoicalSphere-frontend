@@ -1,3 +1,4 @@
+
 .postMainDiv {
   background-color: #121212;
   color: #f5f5f5;
@@ -52,9 +53,11 @@
   color: #f5f5f5;
   padding-left: 20px;
   gap: 5px;
-  border-radius: 6px;
+  /* border-radius: 6px; */
   padding: 8px;
-  /* border-bottom: 1px solid #f5f5f5; */
+  position: relative;
+  
+  border-bottom: 1px solid #f5f5f5;
 
   /* border: 1px solid green; */
   /* background-color: #f5f5f5f4; */
@@ -82,23 +85,15 @@
 }
 
 .postBox {
-  width: 1600px;
+  width:100%;
   text-align: center;
-  margin: auto;
-  margin-top: 30px;
-  /* height: 100vh; */
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  /* border: 1px solid red; */
+ 
 }
 .containerCardPost {
   /* border:1px solid red; */
   width: 500px;
   display: flex;
   justify-content: center;
-  height: 100%;
 }
 .cardPost {
   display: flex;
@@ -117,7 +112,7 @@
 .cardIcon {
   display: flex;
   /* border:1px solid red; */
-  width: 60px;
+  /* width: 60px; */
   justify-content: space-between;
   font-size: 20px;
   margin-top: 10px;
@@ -224,4 +219,7 @@
   }
 }
 
+.scrollingFollowers::-webkit-scrollbar {
+  display: none;
+}
 

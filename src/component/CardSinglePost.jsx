@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Divider, IconButton, Popover } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const CardSinglePost = ({ posts }) => {
   const { user, allPost, setAllPost } = useContext(LoginContext);
@@ -25,11 +25,11 @@ const CardSinglePost = ({ posts }) => {
     comments: { count: commentsCount = 0, list: commentsList = [] } = {},
     post = "",
     likes: { count: likesCount = 0, list: likesList = [] } = {},
-    userId: { name = "", _id: userId = "" } = {},
+    userId: { name = "", _id: userId = "", profilePicture ="" } = {},
     timestamp = "",
     _id = "",
   } = posts || {};
-  console.log(userId);
+  // console.log(userId);
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   const date = new Date(timestamp);
@@ -220,6 +220,7 @@ const CardSinglePost = ({ posts }) => {
           border: "1px solid #CCD0D5",
           padding: "10px",
           borderRadius: "5px",
+          cursor:"pointer"
         }}
       >
         <Modal
@@ -290,37 +291,7 @@ const CardSinglePost = ({ posts }) => {
           </Box>
         </Modal>
 
-        {/* <Modal
-          //   id={id}
-          open={deletePost}
-          //   anchorEl={anchorEl}
-          onClose={() => setDeletePost(false)}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          style={{
-            top: "30%",
-            cursor: "pointer",
-            left: "58%",
-            width: "150px",
-            borderRadius: "10px",
-            textAlign: "center",
-            height: "60px",
-            backgroundColor: "#262626",
-            color: "#f5f5f5",
-          }}
-        >
-          <Typography
-            onClick={() => {
-              setDeletePost(true);
-              postDelete(_id);
-            }}
-            sx={{ p: 2 }}
-          >
-            Delete Post
-          </Typography>
-        </Modal> */}
+        
         <Card
           key={_id}
           sx={{
@@ -333,20 +304,20 @@ const CardSinglePost = ({ posts }) => {
           }}
         >
           <CardHeader
-            avatar={<Avatar aria-label="recipe">{firstLetter}</Avatar>}
-            action={
-              <IconButton
-                sx={{ color: "#f5f5f5" }}
-                aria-label="settings"
-                style={{ display: loggedInUserId == userId ? "block" : "none" }}
-              >
-                <DeleteOutlineIcon
-                  onClick={() => {
-                    postDelete(_id);
-                  }}
-                />
-              </IconButton>
-            }
+            avatar={<Avatar alt={firstLetter} src={profilePicture}   ></Avatar>}
+            // action={
+            //   <IconButton
+            //     sx={{ color: "#f5f5f5" }}
+            //     aria-label="settings"
+            //     style={{ display: loggedInUserId == userId ? "block" : "none" }}
+            //   >
+            //     <DeleteOutlineIcon
+            //       onClick={() => {
+            //         postDelete(_id);
+            //       }}
+            //     />
+            //   </IconButton>
+            // }
             sx={{
               textAlign: "left",
               paddingLeft: "0px",
@@ -382,6 +353,7 @@ const CardSinglePost = ({ posts }) => {
             </Typography>
           </div>
           <div className="cardIcon">
+            <div style={{display:"flex", width:"60px", justifyContent:"space-between"}}>
             <div
               onClick={() => {
                 if (likesList.includes(loggedInUserId)) {
@@ -407,6 +379,20 @@ const CardSinglePost = ({ posts }) => {
                   }
                 }}
               />
+            </div>
+            </div>
+            <div   style={{ display: loggedInUserId == userId ? "block" : "none" }}>
+            {/* <IconButton
+                sx={{ color: "#f5f5f5" }}
+                aria-label="settings"
+              
+              > */}
+                <DeleteOutlineIcon
+                  onClick={() => {
+                    postDelete(_id);
+                  }}
+                />
+              {/* </IconButton> */}
             </div>
           </div>
           <div className="likeCommentText">
