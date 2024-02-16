@@ -19,7 +19,7 @@ const Post = () => {
   return (
     <div className="postMainDiv">
       <Navbar />
-      <Box className="postBox" style={{ overflowY: "hidden", width:"100%" }}>
+      <Box className="postBox" style={{ overflowY: "hidden", width:"100%", position:"relative" }}>
         <InfiniteScroll
           dataLength={allPost.length}
           next={getPost}
@@ -37,7 +37,7 @@ const Post = () => {
         >
           <div style={{display:"flex", justifyContent:"space-between", width:"100%", flexDirection:"row",}}>
             <SideDrawer />
-            <PostCard />
+            <div style={{width:"660px", paddingTop:"20px",paddingBottom:"20px", margin:"auto",border:"1px solid #262626"}}><PostCard /></div>
             <MessageSearch />
           </div>
         </InfiniteScroll>

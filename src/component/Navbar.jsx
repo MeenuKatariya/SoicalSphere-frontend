@@ -17,6 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
+
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -33,6 +34,8 @@ const Navbar = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const { user, setUser } = useContext(LoginContext);
+
+  const [debounceTimer, setDebounceTimer] = useState(null);
   const {
     decoded: { id: loggedInUserId = "", username = "" } = {},
     token = "",
@@ -50,18 +53,22 @@ const Navbar = () => {
 
   const searchApi = async () => {
     try {
-      const data = await fetch(`http://localhost:5000/user?search=${searchInput}`, {
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          token: token,
-        },
-      });
+      const data = await fetch(
+        `http://localhost:5000/user?search=${searchInput}`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            token: token,
+          },
+        }
+      );
       const res = await data.json();
       setSearchResult(res);
     } catch (err) {
       console.log(err);
     }
   };
+
   return (
     <div>
       <Modal
@@ -128,11 +135,12 @@ const Navbar = () => {
               value={searchInput}
               onChange={(e) => {
                 setSearchInput(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  searchApi();
-                }
+                clearTimeout(debounceTimer);
+                const newTimer = setTimeout(() => {
+                  searchApi()
+                }, 300);
+
+                setDebounceTimer(newTimer);
               }}
               placeholder="Search..."
             />
@@ -143,7 +151,10 @@ const Navbar = () => {
             <div className="messageIcon">
               <Tooltip arrow title="Message">
                 <IconButton>
-                  <SendIcon onClick={()=>navigate("/chat")} sx={{ color: "#f5f5f5", cursor: "pointer" }} />
+                  <SendIcon
+                    onClick={() => navigate("/chat")}
+                    sx={{ color: "#f5f5f5", cursor: "pointer" }}
+                  />
                 </IconButton>
               </Tooltip>
             </div>
@@ -179,7 +190,7 @@ const Navbar = () => {
         handleClose={setCreatePostModal}
       />
 
-      <SearchUser searchResult={searchResult} searchInput={searchInput} />
+      <SearchUser searchResult={searchResult} searchInput={searchInput}  setSearchInput={setSearchInput} />
     </div>
   );
 };

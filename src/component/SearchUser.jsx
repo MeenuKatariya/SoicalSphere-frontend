@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Avatar,
@@ -9,24 +9,31 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const SearchUser = ({ searchResult, searchInput }) => {
+const SearchUser = ({ searchResult, searchInput, setSearchInput }) => {
     const navigate = useNavigate()
+    const [isVisibleCard, setIsVisibleCard] = useState(true);
 
   return (
     <div
+    className="scrollingFollowers"
       style={{
+       
         position: "absolute",
+        zIndex:'10',
         left: "51.4%",
-        top: "6%",
-        height: "10px",
+        // top: "6%",
+        height: "300px",
         width: "366px",
+        overflowX: "hidden",
+        overflowY: "scroll",
+        scrollBehavior: "smooth",
         backgroundColor: "#262626",
         display: searchResult.length ? "block" : "none",
-        display: searchInput ? "block" : "none",
-        borderRadius: "20px"
+        display: searchInput && searchResult ?  "block" : "none",
+        borderRadius: "5px",
       }}
     >
-      {searchResult.length ? (
+      {searchResult.length   ? (
         searchResult?.map((user) => {
           const {
             name = "",
@@ -38,7 +45,9 @@ const SearchUser = ({ searchResult, searchInput }) => {
           const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
           return (
             <div key={id}>
-              <Card
+             {
+              isVisibleCard && (
+                <Card
                 sx={{
                   bgcolor: "#262626",
                   textAlign: "left",
@@ -47,7 +56,7 @@ const SearchUser = ({ searchResult, searchInput }) => {
                   borderRadius: "0px",
                   cursor: "pointer",
                 }}
-                onClick= {() => navigate(`/profile/${id}`)}
+                onClick= {() => {setIsVisibleCard(false); setSearchInput(""); navigate(`/profile/${id}`)}}
               >
                 <CardHeader
                   avatar={
@@ -60,14 +69,16 @@ const SearchUser = ({ searchResult, searchInput }) => {
                     </Typography>
                   }
                 />
-                <Divider></Divider>
+                <Divider/>
               </Card>
+              )
+             }
             </div>
           );
         })
       ) : (
-        <div style={{ color: "#121212", padding: "10px", textAlign: "center" }}>
-          No Results Found
+        <div style={{ color: "#f5f5f5", padding: "10px", textAlign: "center" }}>
+          No Result Found
         </div>
         
       )}

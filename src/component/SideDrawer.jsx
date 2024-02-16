@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../context/loginContext";
 import { Avatar, Box, Card, CardHeader, Typography } from "@mui/material";
 
 const SideDrawer = () => {
+  const navigate = useNavigate();
   const { user } = useContext(LoginContext);
   const {
     decoded: {
@@ -21,10 +22,11 @@ const SideDrawer = () => {
   return (
     <div
       style={{
-        border: "1px solid #262626",
+        // border: "1px solid #262626",
         display: "flex",
         flexDirection: "column",
         width: "450px",
+        position:"relative"
       }}
     >
       <div
@@ -33,6 +35,8 @@ const SideDrawer = () => {
           fontSize: "20px",
           textAlign: "left",
           overflow: "hidden",
+          position:'sticky',
+            top:"0px"
         }}
       >
         Followers
@@ -48,6 +52,7 @@ const SideDrawer = () => {
             overflowY: "scroll",
             scrollBehavior: "smooth",
             cursor: "pointer",
+            
           }}
         >
           {followersList.length ? (
@@ -57,7 +62,8 @@ const SideDrawer = () => {
               const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
               return (
                 <Box sx={{ color: "#f5f5f5" }} key={`${name} ${id}`}>
-                  <Card
+                  <Card  
+                  onClick={()=> navigate(`/profile/${id}`)}
                     sx={{
                       maxWidth: "100%",
                       bgcolor: "#262626",
@@ -85,7 +91,8 @@ const SideDrawer = () => {
         </div>
       </div>
 
-      <div style={{ padding: "20px", fontSize: "20px", textAlign: "left" }}>
+      <div style={{ padding: "20px", fontSize: "20px", textAlign: "left",   position:'sticky',
+            top:"375px" }}>
         Following
         <div
           className="scrollingFollowers"
@@ -108,7 +115,8 @@ const SideDrawer = () => {
               const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
               return (
                 <Box sx={{ color: "#f5f5f5" }} key={`${name} ${id}`} >
-                  <Card
+                  <Card 
+                   onClick={()=> navigate(`/profile/${id}`)}
                     sx={{
                       maxWidth: "100%",
                       bgcolor: "#262626",

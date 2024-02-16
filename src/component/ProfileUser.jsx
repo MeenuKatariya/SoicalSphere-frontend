@@ -68,7 +68,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
     } = {},
     token = "",
   } = user || {};
-  
+
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   const id = window.location.pathname;
@@ -94,29 +94,33 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
 
   const userNotLoggedIn = async () => {
     try {
-      const data = await fetch(`http://localhost:5000/user/profile/${idNotLoggedIn}`);
-      const res = await data.json();
-      setUserNotLoggedInData(res);
+      if (loggedInUserId !== idNotLoggedIn) {
+        const data = await fetch(
+          `http://localhost:5000/user/profile/${idNotLoggedIn}`
+        );
+        const res = await data.json();
+        setUserNotLoggedInData(res);
+      }
     } catch (err) {
       console.log(err);
     }
   };
   const userPost = async () => {
     try {
-      if(idNotLoggedIn){
-        const data = await fetch(`http://localhost:5000/post/userPost/${idNotLoggedIn}`);
-      const res = await data.json();
-      setUserAllPost(res);
-      console.log(res.length)
-      countUserPost = res.length;
-      }else{
-        const data = await fetch(`http://localhost:5000/post/userPost/${loggedInUserId}`);
+      if (loggedInUserId !== idNotLoggedIn) {
+        const data = await fetch(
+          `http://localhost:5000/post/userPost/${idNotLoggedIn}`
+        );
         const res = await data.json();
-      setUserAllPost(res);
-     
-      countUserPost = res.length;
+        setUserAllPost(res);
+      } else {
+        console.log('no')
+        const data = await fetch(
+          `http://localhost:5000/post/userPost/${loggedInUserId}`
+        );
+        const res = await data.json();
+        setUserAllPost(res);
       }
-     
     } catch (err) {
       console.log(err);
     }
@@ -153,6 +157,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
       updatedUser.decoded.following.list = [...loggedFollowingList, userId];
       updatedUser.decoded.following.count = loggedFollowingList + 1;
       setUser(updatedUser);
+      console.log("follow",updatedUser)
     } catch (err) {
       console.log(err);
     }
@@ -166,6 +171,30 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
           token: token,
         },
       });
+      const userNotLoggedInDataUpdated = { ...userNotLoggedInData };
+      const { followers: { list: followerUserList = [] } = {} } =
+        userNotLoggedInDataUpdated || {};
+        const updatedFollowerList = followerUserList?.filter((userId) => 
+          userId !== loggedInUserId
+        ) 
+      userNotLoggedInDataUpdated.followers.list = [
+        updatedFollowerList
+      ];
+      userNotLoggedInDataUpdated.followers.count = updatedFollowerList.length;
+      setUserNotLoggedInData(userNotLoggedInDataUpdated);
+
+      const updatedUser = { ...user } || {};
+      const {
+        decoded: { following: { list: loggedFollowingList = [] } = {} } = {},
+      } = updatedUser || {};
+      const updatedFollowingList = loggedFollowingList?.filter((userId) => 
+          userId !== idNotLoggedIn
+        ) 
+      updatedUser.decoded.following.list = updatedFollowingList;
+      updatedUser.decoded.following.count = updatedFollowingList.length;
+      setUser(updatedUser);
+
+      console.log("unfollow",updatedUser)
     } catch (err) {
       console.log(err);
     }
@@ -181,9 +210,18 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
         setEditProfileModal={setEditProfileModal}
       />
 
-      {userId !== loggedInUserId ? (
+      {idNotLoggedIn !== loggedInUserId ? (
         userNotLoggedInData && (
-          <Box className="postBox" style={{border:"1px solid green", display:"flex", justifyContent:"space-between", flexDirection:"column"}}>
+          <Box
+            className="postBox"
+            style={{
+              display: "flex",
+              gap: "80px",
+              flexDirection: "column",
+              width: "1200px",
+              margin: "auto",
+            }}
+          >
             <div style={{ width: "500px", margin: "auto", marginTop: "50px" }}>
               <div
                 style={{
@@ -192,7 +230,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                   margin: "auto",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  border: "1px solid red",
+                  // border: "1px solid red",
                 }}
               >
                 <div
@@ -215,7 +253,6 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                       fontWeight: "500",
                     }}
                   ></Avatar>
-                 
                 </div>
 
                 <div
@@ -300,7 +337,9 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                       marginTop: "10px",
                     }}
                   >
-                    <Typography>{countUserPost} <span>Post</span></Typography>
+                    <Typography>
+                      {countUserPost} <span>Post</span>
+                    </Typography>
                     <Typography>
                       {followersCountUser}
                       <span> Followers</span>
@@ -323,9 +362,11 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                   </div>
                 </div>
               </div>
-              <Divider sx={{ bgColor: "#f5f5f5" }}></Divider>
             </div>
-            <UserPostGrid  userAllPost={userAllPost} />
+            <Divider sx={{ bgcolor: "#262626" }} />
+            <div>
+              <UserPostGrid userAllPost={userAllPost} />
+            </div>
           </Box>
         )
       ) : (
@@ -333,7 +374,16 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
 
         // Logged In User
 
-        <Box className="postBox" style={{ display:"flex", gap:"80px", flexDirection:"column", width:"1200px", margin:"auto"}}>
+        <Box
+          className="postBox"
+          style={{
+            display: "flex",
+            gap: "80px",
+            flexDirection: "column",
+            width: "1200px",
+            margin: "auto",
+          }}
+        >
           <div style={{ width: "500px", margin: "auto", marginTop: "50px" }}>
             <div
               style={{
@@ -429,7 +479,9 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                     marginTop: "10px",
                   }}
                 >
-                  <Typography>{countUserPost} <span>Post</span></Typography>
+                  <Typography>
+                    {countUserPost} <span>Post</span>
+                  </Typography>
                   <Typography>{followersCount} Followers</Typography>
                   <Typography>{followingCount} Following</Typography>
                 </div>
@@ -448,10 +500,10 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
             </div>
             {/* <Divider sx={{ color: "#f5f5f5" }}/> */}
           </div>
-          <Divider sx={{bgcolor:"#262626"}}/>
+          <Divider sx={{ bgcolor: "#262626" }} />
           <div>
-            <UserPostGrid  userAllPost={userAllPost} />
-          </div>
+              <UserPostGrid userAllPost={userAllPost} />
+            </div>
         </Box>
       )}
     </div>

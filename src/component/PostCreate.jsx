@@ -41,7 +41,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   const [picloading, setPicLoading] = useState(false);
   const [caption, setCaption] = useState("");
   const [postCreateSuccess, setPostCreateSuccess] = useState(false);
-  const { token = {}, decode: { id: userId = "" } = {} } = user || {};
+  const { token = {}, decoded: { id: userId = "" } = {} } = user || {};
 
   const [state, setState] = useState({
     vertical: "top",
@@ -71,7 +71,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
     };
 
     try {
-     const data = await fetch("http://localhost:5000/addPost", {
+     const data = await fetch("http://localhost:5000/post/addPost", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -80,7 +80,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         body: JSON.stringify(postData),
       });
       const result = await data.json();
-    // console.log({result})
+    console.log({result})
       setAllPost([...allPost,result])
       setPostCreateSuccess(true);
       setPicLoading(false);

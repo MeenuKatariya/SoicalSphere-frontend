@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { LoginContext } from "../context/loginContext";
-import { useNavigate } from "react-router-dom";
 import "../css/style.css";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -16,6 +15,7 @@ import Modal from "@mui/material/Modal";
 import { Divider, IconButton, Popover } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useNavigate } from "react-router-dom";
 
 const CardSinglePost = ({ posts }) => {
   const { user, allPost, setAllPost } = useContext(LoginContext);
@@ -29,6 +29,7 @@ const CardSinglePost = ({ posts }) => {
     timestamp = "",
     _id = "",
   } = posts || {};
+  const navigate= useNavigate()
   // console.log(userId);
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
@@ -301,7 +302,9 @@ const CardSinglePost = ({ posts }) => {
             boxShadow:
               "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px",
             paddingBottom: "25px",
+
           }}
+          onClick={()=> navigate(`/profile/${userId}`)}
         >
           <CardHeader
             avatar={<Avatar alt={firstLetter} src={profilePicture}   ></Avatar>}

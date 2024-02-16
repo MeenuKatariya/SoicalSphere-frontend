@@ -18,7 +18,7 @@ import { Circles } from "react-loader-spinner";
 const PostCard = () => {
   const { allPost, getPost, hasMore } = useContext(LoginContext);
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: "hidden", marginLeft:"82px" }}>
       <div id="scrollableDiv" className="containerCardPost">
         {/* <InfiniteScroll 
          dataLength={allPost.length}
