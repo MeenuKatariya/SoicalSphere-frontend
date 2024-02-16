@@ -20,7 +20,7 @@ export default function App() {
       <Routes>
         {token && <Route path="/post" Component={Post} />}
         {!token && <Route path="/" Component={Signup} exact />}
-        {token && <Route path="/:username" Component={ProfileUser} />}
+        {token && <Route path="/profile/:id" Component={ProfileUser} />}
         {token && <Route path="/chat" Component={ChatBox} />}
       </Routes>
     </>

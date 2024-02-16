@@ -73,9 +73,9 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
         delete updatedData[key];
       }
     });
-
+    console.log(updatedData)
     try {
-      const data = await fetch("http://localhost:5000/updateProfile", {
+      const data = await fetch("http://localhost:5000/user/updateProfile", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -86,7 +86,10 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
       const res = await data.json();
       console.log(res)
       localStorage.setItem("userInfo", JSON.stringify(res));
-      setUser((prevUser) => [...prevUser, res]);
+      const updatedUser = {...user} || {};
+       updatedUser = { ...updatedUser, updatedData};
+       setUser(updatedUser)
+
     } catch (err) {
       console.log(err);
     }
@@ -243,6 +246,7 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
               <button
                 onClick={() => {
                   postProfile();
+                  setEditProfileModal({ boolean: false })
                 }}
                 style={{
                   border: "1px solid #f5f5f5",

@@ -10,12 +10,12 @@ const SideDrawer = () => {
       id: loggedInUserId = "",
       name = "",
       username = "",
-      bio = "",
       followers: { count: followersCount = 0, list: followersList = [] } = {},
       following: { count: followingCount = 0, list: followingList = [] } = {},
     } = {},
     token = "",
   } = user || {};
+  console.log(user)
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   return (
@@ -52,11 +52,11 @@ const SideDrawer = () => {
         >
           {followersList.length ? (
             followersList?.map((followedUser) => {
-              const { name, profilePicture, username } = followedUser || {};
+              const { name  = "", profilePicture = "", username = "", _id:id = "" } = followedUser || {};
               const firstLetter = name.charAt(0).toUpperCase();
               const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
               return (
-                <Box sx={{ color: "#f5f5f5" }}>
+                <Box sx={{ color: "#f5f5f5" }} key={`${name} ${id}`}>
                   <Card
                     sx={{
                       maxWidth: "100%",
@@ -68,7 +68,7 @@ const SideDrawer = () => {
                   >
                     <CardHeader
                       avatar={
-                        <Avatar alt={firstLetter} src={profilePicture}></Avatar>
+                        <Avatar alt={firstLetter}   src={profilePicture}></Avatar>
                       }
                       title={
                         <Typography variant="h6">{nameCapital}</Typography>
@@ -103,11 +103,11 @@ const SideDrawer = () => {
         >
           {followingList.length ? (
             followingList?.map((followingUser) => {
-              const { name, profilePicture, username } = followingUser || {};
+              const { name = "", profilePicture = "", username = "", _id : id="" } = followingUser || {};
               const firstLetter = name.charAt(0).toUpperCase();
               const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
               return (
-                <Box sx={{ color: "#f5f5f5" }}>
+                <Box sx={{ color: "#f5f5f5" }} key={`${name} ${id}`} >
                   <Card
                     sx={{
                       maxWidth: "100%",

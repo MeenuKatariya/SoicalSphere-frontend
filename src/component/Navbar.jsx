@@ -34,7 +34,7 @@ const Navbar = () => {
   const [searchResult, setSearchResult] = useState([]);
   const { user, setUser } = useContext(LoginContext);
   const {
-    decode: { id: loggedInUserId = "", username = "" } = {},
+    decoded: { id: loggedInUserId = "", username = "" } = {},
     token = "",
   } = user || {};
   const [profileModal, setProfileModal] = useState(false);
@@ -89,7 +89,7 @@ const Navbar = () => {
                 <ListItemText
                   onClick={() => {
                     setModalProfileLogout(false);
-                    navigate("/profile");
+                    navigate(`/profile/${loggedInUserId}`);
                   }}
                   primary="Profile"
                   sx={{ cursor: "pointer", textAlign: "center" }}

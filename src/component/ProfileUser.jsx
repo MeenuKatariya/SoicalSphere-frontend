@@ -18,6 +18,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import EditIcon from "@mui/icons-material/Edit";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ModalProfileUpdate from "./ModalProfileUpdate";
+import UserPostGrid from "./userPostGrid";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,31 +50,73 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
     boolean: false,
   });
   const [userNotLoggedInData, setUserNotLoggedInData] = useState({});
-
-  const { user } = useContext(LoginContext);
-  console.log(user);
+  const [userAllPost, setUserAllPost] = useState([]);
+  let countUserPost = 0;
+  const { user, setUser } = useContext(LoginContext);
   const {
-    decode: {
+    decoded: {
       id: loggedInUserId = "",
       name = "",
       username = "",
       bio = "",
       followers: { count: followersCount = 0 } = {},
-      following: { count: followingCount = 0 } = {},
+      following: {
+        count: followingCount = 0,
+        list: loggedUserFollowingList = [],
+      } = {},
       profilePicture = "",
     } = {},
     token = "",
   } = user || {};
+  
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   const id = window.location.pathname;
-  const idNotLoggedIn = id.slice(1);
-  console.log(idNotLoggedIn);
+  const idNotLoggedIn = id.split("/").slice(2).join("");
+
+  const {
+    _id: userId = "",
+    name: nameUser = "",
+    username: userName = "",
+    bio: userBio = "",
+    followers: {
+      count: followersCountUser = 0,
+      list: followersListUserNotLoggedIn = [],
+    } = {},
+    following: {
+      count: followingCountUser = 0,
+      list: followingListUserNotLoggedIn = [],
+    } = {},
+    profilePicture: profilePictureUser = "",
+  } = userNotLoggedInData || {};
+  const firstLetterUser = nameUser.charAt(0).toUpperCase();
+  const nameUserCapital = nameUser.charAt(0).toUpperCase() + nameUser.slice(1);
+
   const userNotLoggedIn = async () => {
     try {
-      const data = await fetch(`http://localhost:5000/user/${idNotLoggedIn}`);
+      const data = await fetch(`http://localhost:5000/user/profile/${idNotLoggedIn}`);
       const res = await data.json();
       setUserNotLoggedInData(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const userPost = async () => {
+    try {
+      if(idNotLoggedIn){
+        const data = await fetch(`http://localhost:5000/post/userPost/${idNotLoggedIn}`);
+      const res = await data.json();
+      setUserAllPost(res);
+      console.log(res.length)
+      countUserPost = res.length;
+      }else{
+        const data = await fetch(`http://localhost:5000/post/userPost/${loggedInUserId}`);
+        const res = await data.json();
+      setUserAllPost(res);
+     
+      countUserPost = res.length;
+      }
+     
     } catch (err) {
       console.log(err);
     }
@@ -81,20 +124,53 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
 
   useEffect(() => {
     userNotLoggedIn();
+    userPost();
   }, []);
 
-  const {
-    id: loggedNotUserId = "",
-    name: nameUser = "",
-    username: userName = "",
-    bio: userBio = "",
-    followers: { count: followersCountUser = 0 } = {},
-    following: { count: followingCountUser = 0 } = {},
-    profilePicture: profilePictureUser = "",
-  } = userNotLoggedInData || {};
-  const firstLetterUser = nameUser.charAt(0).toUpperCase();
-  const nameUserCapital = nameUser.charAt(0).toUpperCase() + nameUser.slice(1);
-  console.log(firstLetterUser);
+  const followUser = async (userId) => {
+    try {
+      await fetch(`http://localhost:5000/user/followUser/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          token: token,
+        },
+      });
+      const userNotLoggedInDataUpdated = { ...userNotLoggedInData };
+      const { followers: { list: followerUserList = [] } = {} } =
+        userNotLoggedInDataUpdated || {};
+      userNotLoggedInDataUpdated.followers.list = [
+        ...followerUserList,
+        loggedInUserId,
+      ];
+      userNotLoggedInDataUpdated.followers.count = followerUserList.length + 1;
+      setUserNotLoggedInData(userNotLoggedInDataUpdated);
+
+      const updatedUser = { ...user } || {};
+      const {
+        decoded: { following: { list: loggedFollowingList = [] } = {} } = {},
+      } = updatedUser || {};
+      updatedUser.decoded.following.list = [...loggedFollowingList, userId];
+      updatedUser.decoded.following.count = loggedFollowingList + 1;
+      setUser(updatedUser);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const unFollowUser = async (userId) => {
+    try {
+      await fetch(`http://localhost:5000/user/unFollow/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          token: token,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div
       style={{ backgroundColor: "#121212", height: "100vh", color: "#f5f5f5" }}
@@ -105,10 +181,10 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
         setEditProfileModal={setEditProfileModal}
       />
 
-      {idNotLoggedIn != loggedInUserId ? (
+      {userId !== loggedInUserId ? (
         userNotLoggedInData && (
-          <Box className="postBox">
-            <div style={{ width: "600px", margin: "auto", marginTop: "50px" }}>
+          <Box className="postBox" style={{border:"1px solid green", display:"flex", justifyContent:"space-between", flexDirection:"column"}}>
+            <div style={{ width: "500px", margin: "auto", marginTop: "50px" }}>
               <div
                 style={{
                   display: "flex",
@@ -139,37 +215,14 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                       fontWeight: "500",
                     }}
                   ></Avatar>
-                  {/* <div
-                  onClick={() =>
-                    setEditProfileModal({ profilePic: true, boolean: true })
-                  }
-                  className="hoverIcon"
-                  style={{
-                    position: "absolute",
-                    height: "100%",
-                    width: "100%",
-                    backgroundColor: "#262626",
-                    top: "0%",
-                    borderRadius: "50%",
-                  }}
-                >
-                  <div
-                    style={{
-                      marginTop: "50px",
-                      marginLeft: "8px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <AddAPhotoIcon sx={{ width: "40px", height: "100%" }} />
-                  </div>
-                </div> */}
+                 
                 </div>
 
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    width: "280px",
+                    width: "250px",
                   }}
                 >
                   <div
@@ -185,31 +238,44 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                     >
                       {nameUserCapital}
                     </Typography>
+                    {!followersListUserNotLoggedIn.includes(loggedInUserId) ? (
+                      <Button
+                        variant="text"
+                        sx={{
+                          // border: "1px solid #f5f5f5",
+                          color: "#0095f6",
+                          textTransform: "none",
+                          cursor: "Pointer",
+                          fontSize: "15px",
+                          fontWeight: "500",
+                          // borderRadius: "10px",
+                        }}
+                        onClick={() => followUser(userId)}
+                      >
+                        Follow
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="text"
+                        sx={{
+                          // border: "1px solid #f5f5f5",
+                          color: "#0095f6",
+                          textTransform: "none",
+                          cursor: "Pointer",
+                          fontSize: "15px",
+                          fontWeight: "500",
+                          // borderRadius: "10px",
+                        }}
+                        onClick={() => unFollowUser(userId)}
+                      >
+                        Unfollow
+                      </Button>
+                    )}
                     <Button
-                      variant="contained"
+                      variant="text"
                       sx={{
-                        border: "1px solid #f5f5f5",
-                        color: "#f5f5f5",
-                        textTransform: "none",
-                        cursor: "Pointer",
-                        fontSize: "15px",
-                        fontWeight: "500",
-                        borderRadius: "10px",
-                      }}
-                      onClick={() =>
-                        setEditProfileModal({
-                          profilePic: false,
-                          boolean: true,
-                        })
-                      }
-                    >
-                      Follow
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        border: "1px solid #f5f5f5",
-                        color: "#f5f5f5",
+                        // border: "1px solid #f5f5f5",
+                        color: "#0095f6",
                         textTransform: "none",
                         cursor: "Pointer",
                         fontSize: "15px",
@@ -234,7 +300,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                       marginTop: "10px",
                     }}
                   >
-                    <Typography>ost</Typography>
+                    <Typography>{countUserPost} <span>Post</span></Typography>
                     <Typography>
                       {followersCountUser}
                       <span> Followers</span>
@@ -259,6 +325,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
               </div>
               <Divider sx={{ bgColor: "#f5f5f5" }}></Divider>
             </div>
+            <UserPostGrid  userAllPost={userAllPost} />
           </Box>
         )
       ) : (
@@ -266,8 +333,8 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
 
         // Logged In User
 
-        <Box className="postBox">
-          <div style={{ width: "600px", margin: "auto", marginTop: "50px" }}>
+        <Box className="postBox" style={{ display:"flex", gap:"80px", flexDirection:"column", width:"1200px", margin:"auto"}}>
+          <div style={{ width: "500px", margin: "auto", marginTop: "50px" }}>
             <div
               style={{
                 display: "flex",
@@ -276,7 +343,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                 flexDirection: "row",
                 width: "100%",
                 justifyContent: "space-between",
-                border: "1px solid red",
+                // border: "1px solid red",
               }}
             >
               <div
@@ -329,7 +396,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "240px",
+                  width: "250px",
                 }}
               >
                 <div
@@ -362,7 +429,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                     marginTop: "10px",
                   }}
                 >
-                  <Typography>post</Typography>
+                  <Typography>{countUserPost} <span>Post</span></Typography>
                   <Typography>{followersCount} Followers</Typography>
                   <Typography>{followingCount} Following</Typography>
                 </div>
@@ -379,7 +446,11 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                 </div>
               </div>
             </div>
-            <Divider sx={{ bgColor: "#f5f5f5" }}></Divider>
+            {/* <Divider sx={{ color: "#f5f5f5" }}/> */}
+          </div>
+          <Divider sx={{bgcolor:"#262626"}}/>
+          <div>
+            <UserPostGrid  userAllPost={userAllPost} />
           </div>
         </Box>
       )}

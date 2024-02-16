@@ -47,7 +47,7 @@ const SearchUser = ({ searchResult, searchInput }) => {
                   borderRadius: "0px",
                   cursor: "pointer",
                 }}
-                onClick= {() => navigate(`/${id}`)}
+                onClick= {() => navigate(`/profile/${id}`)}
               >
                 <CardHeader
                   avatar={

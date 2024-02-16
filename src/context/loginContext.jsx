@@ -45,7 +45,7 @@ export function LoginContextProvider({ children }) {
         );
         const res = await data.json();
         setAllPost(res);
-        console.log(res);
+        // console.log(res);
         if (res.length === 0) {
           setHasMore(false);
           return;
