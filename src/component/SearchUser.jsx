@@ -8,20 +8,24 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Loader from "./skeleton";
 
-const SearchUser = ({ searchResult, searchInput, setSearchInput }) => {
-    const navigate = useNavigate()
-    const [isVisibleCard, setIsVisibleCard] = useState(true);
+const SearchUser = ({
+  searchResult,
+  searchInput,
+  setSearchInput,
+  loading
+}) => {
+  const navigate = useNavigate();
+  const [isVisibleCard, setIsVisibleCard] = useState(true);
 
   return (
     <div
-    className="scrollingFollowers"
+      className="scrollingFollowers"
       style={{
-       
         position: "absolute",
-        zIndex:'10',
+        zIndex: "10",
         left: "51.4%",
-        // top: "6%",
         height: "300px",
         width: "366px",
         overflowX: "hidden",
@@ -29,11 +33,11 @@ const SearchUser = ({ searchResult, searchInput, setSearchInput }) => {
         scrollBehavior: "smooth",
         backgroundColor: "#262626",
         display: searchResult.length ? "block" : "none",
-        display: searchInput && searchResult ?  "block" : "none",
+        display: searchInput && searchResult ? "block" : "none",
         borderRadius: "5px",
       }}
     >
-      {searchResult.length   ? (
+      {searchResult.length ? (
         searchResult?.map((user) => {
           const {
             name = "",
@@ -45,34 +49,43 @@ const SearchUser = ({ searchResult, searchInput, setSearchInput }) => {
           const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
           return (
             <div key={id}>
-             {
-              isVisibleCard && (
-                <Card
-                sx={{
-                  bgcolor: "#262626",
-                  textAlign: "left",
-                  color: "#f5f5f5",
-                  boxShadow: "none",
-                  borderRadius: "0px",
-                  cursor: "pointer",
-                }}
-                onClick= {() => {setIsVisibleCard(false); setSearchInput(""); navigate(`/profile/${id}`)}}
-              >
-                <CardHeader
-                  avatar={
-                    <Avatar alt={firstLetter} src={profilePicture}></Avatar>
-                  }
-                  title={<Typography variant="h6">{username}</Typography>}
-                  subheader={
-                    <Typography sx={{ fontSize: "15px" }}>
-                      {nameCapital}
-                    </Typography>
-                  }
-                />
-                <Divider/>
-              </Card>
-              )
-             }
+              {loading ? (
+                <Loader />
+              ) : (
+                isVisibleCard && (
+                  <Card
+                    sx={{
+                      bgcolor: "#262626",
+                      textAlign: "left",
+                      color: "#f5f5f5",
+                      boxShadow: "none",
+                      borderRadius: "0px",
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "#797D7F",
+                      },
+                    }}
+                    onClick={() => {
+                      setIsVisibleCard(false);
+                      setSearchInput("");
+                      navigate(`/profile/${id}`);
+                    }}
+                  >
+                    <CardHeader
+                      avatar={
+                        <Avatar alt={firstLetter} src={profilePicture}></Avatar>
+                      }
+                      title={<Typography variant="h6">{username}</Typography>}
+                      subheader={
+                        <Typography sx={{ fontSize: "15px" }}>
+                          {nameCapital}
+                        </Typography>
+                      }
+                    />
+                    <Divider />
+                  </Card>
+                )
+              )}
             </div>
           );
         })
@@ -80,9 +93,7 @@ const SearchUser = ({ searchResult, searchInput, setSearchInput }) => {
         <div style={{ color: "#f5f5f5", padding: "10px", textAlign: "center" }}>
           No Result Found
         </div>
-        
       )}
-    
     </div>
   );
 };

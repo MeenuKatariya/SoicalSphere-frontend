@@ -11,14 +11,12 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import SideDrawer from "./SideDrawer";
-import MessageSearch from "./MessageSearch";
 import { LoginContext } from "../context/loginContext";
 import makeStyles from "@mui/styles/makeStyles";
-import EditIcon from "@mui/icons-material/Edit";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ModalProfileUpdate from "./ModalProfileUpdate";
 import UserPostGrid from "./userPostGrid";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +43,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const ProfileUser = ({ profileModal, setProfileModal }) => {
+  const [loadingChat, setLoadingChat] = useState(false);
+  const navigate = useNavigate();
   const [editProfileModal, setEditProfileModal] = useState({
     profilePic: false,
     boolean: false,
@@ -52,7 +52,8 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
   const [userNotLoggedInData, setUserNotLoggedInData] = useState({});
   const [userAllPost, setUserAllPost] = useState([]);
   let countUserPost = 0;
-  const { user, setUser } = useContext(LoginContext);
+  const { user, setUser, setSelectedChat, chats, setChats } =
+    useContext(LoginContext);
   const {
     decoded: {
       id: loggedInUserId = "",
@@ -114,7 +115,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
         const res = await data.json();
         setUserAllPost(res);
       } else {
-        console.log('no')
+        console.log("no");
         const data = await fetch(
           `http://localhost:5000/post/userPost/${loggedInUserId}`
         );
@@ -157,7 +158,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
       updatedUser.decoded.following.list = [...loggedFollowingList, userId];
       updatedUser.decoded.following.count = loggedFollowingList + 1;
       setUser(updatedUser);
-      console.log("follow",updatedUser)
+      console.log("follow", updatedUser);
     } catch (err) {
       console.log(err);
     }
@@ -174,12 +175,10 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
       const userNotLoggedInDataUpdated = { ...userNotLoggedInData };
       const { followers: { list: followerUserList = [] } = {} } =
         userNotLoggedInDataUpdated || {};
-        const updatedFollowerList = followerUserList?.filter((userId) => 
-          userId !== loggedInUserId
-        ) 
-      userNotLoggedInDataUpdated.followers.list = [
-        updatedFollowerList
-      ];
+      const updatedFollowerList = followerUserList?.filter(
+        (userId) => userId !== loggedInUserId
+      );
+      userNotLoggedInDataUpdated.followers.list = [updatedFollowerList];
       userNotLoggedInDataUpdated.followers.count = updatedFollowerList.length;
       setUserNotLoggedInData(userNotLoggedInDataUpdated);
 
@@ -187,19 +186,40 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
       const {
         decoded: { following: { list: loggedFollowingList = [] } = {} } = {},
       } = updatedUser || {};
-      const updatedFollowingList = loggedFollowingList?.filter((userId) => 
-          userId !== idNotLoggedIn
-        ) 
+      const updatedFollowingList = loggedFollowingList?.filter(
+        (userId) => userId !== idNotLoggedIn
+      );
       updatedUser.decoded.following.list = updatedFollowingList;
       updatedUser.decoded.following.count = updatedFollowingList.length;
       setUser(updatedUser);
 
-      console.log("unfollow",updatedUser)
+      console.log("unfollow", updatedUser);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const accessChat = async (userId) => {
+    try {
+      setLoadingChat(true);
+      console.log(userId)
+      const data = await fetch("https://localhost:5000/chat", {
+        method: "POST",
+
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          token: token,
+        },
+        body:userId,
+      });
+
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
+      setLoadingChat(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       style={{ backgroundColor: "#121212", height: "100vh", color: "#f5f5f5" }}
@@ -320,10 +340,8 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                         borderRadius: "10px",
                       }}
                       onClick={() =>
-                        setEditProfileModal({
-                          profilePic: false,
-                          boolean: true,
-                        })
+                        // navigate("/chat")
+                        accessChat(userId)
                       }
                     >
                       Message
@@ -502,8 +520,8 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
           </div>
           <Divider sx={{ bgcolor: "#262626" }} />
           <div>
-              <UserPostGrid userAllPost={userAllPost} />
-            </div>
+            <UserPostGrid userAllPost={userAllPost} />
+          </div>
         </Box>
       )}
     </div>

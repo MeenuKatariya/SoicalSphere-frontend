@@ -29,11 +29,14 @@ import { LoginContext } from "../context/loginContext";
 import SearchUser from "./SearchUser";
 import ChatBox from "./ChatBox";
 
+
 const Navbar = () => {
   const [createPostModal, setCreatePostModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const { user, setUser } = useContext(LoginContext);
+  
+  const [loading, setLoading] = useState(false);
 
   const [debounceTimer, setDebounceTimer] = useState(null);
   const {
@@ -53,6 +56,7 @@ const Navbar = () => {
 
   const searchApi = async () => {
     try {
+      setLoading(true)
       const data = await fetch(
         `http://localhost:5000/user?search=${searchInput}`,
         {
@@ -64,6 +68,7 @@ const Navbar = () => {
       );
       const res = await data.json();
       setSearchResult(res);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -190,7 +195,7 @@ const Navbar = () => {
         handleClose={setCreatePostModal}
       />
 
-      <SearchUser searchResult={searchResult} searchInput={searchInput}  setSearchInput={setSearchInput} />
+      <SearchUser searchResult={searchResult} searchInput={searchInput}  setSearchInput={setSearchInput} loading={loading} />
     </div>
   );
 };

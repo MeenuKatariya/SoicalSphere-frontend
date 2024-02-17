@@ -41,7 +41,7 @@ const PostCreate = ({ handleOpen, handleClose }) => {
   const [picloading, setPicLoading] = useState(false);
   const [caption, setCaption] = useState("");
   const [postCreateSuccess, setPostCreateSuccess] = useState(false);
-  const { token = {}, decoded: { id: userId = "" } = {} } = user || {};
+  const { token = "", decoded: { id: userId = "" } = {} } = user || {};
 
   const [state, setState] = useState({
     vertical: "top",
