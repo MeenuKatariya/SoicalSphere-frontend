@@ -1,6 +1,6 @@
-body{
+/* body{
   background-color: #121212;
-}
+} */
 
 .postMainDiv {
   background-color: #121212;
@@ -12,7 +12,7 @@ body{
 .Navbar {
   background-color: #121212;
   color: #f5f5f5;
-
+  position: sticky;
   height: 50px;
   text-align: center;
   padding: 10px;

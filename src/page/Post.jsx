@@ -12,7 +12,21 @@ import { Circles } from "react-loader-spinner";
 
 const Post = () => {
   const { allPost, getPost, hasMore, user } = useContext(LoginContext);
-  const { token = "" } = user || {};
+  const {
+    decoded: {
+      id: loggedInUserId = "",
+      name = "",
+      username = "",
+      bio = "",
+      followers: { count: followersCount = 0 } = {},
+      following: {
+        count: followingCount = 0,
+        list: loggedUserFollowingList = [],
+      } = {},
+      profilePicture = "",
+    } = {},
+    token = "",
+  } = user || {};
   const navigate = useNavigate();
   
 
@@ -30,15 +44,15 @@ const Post = () => {
           width="30"
           marginLeft="50"
           color="#f5f5f5"
-          ariaLabel="circles-loading"  ></Circles>
+          ></Circles>
           </div>}
           height={810}
-          // endMessage={<p>No more posts to load</p>}
+          endMessage={<p  style={{fontSize:"16px", color:"#f2f2f2", fontStyle:"italic"}}>No more posts to load</p>}
         >
           <div style={{display:"flex", justifyContent:"space-between", width:"100%", flexDirection:"row",}}>
-            <SideDrawer />
-            <div style={{width:"660px", paddingTop:"20px",paddingBottom:"20px", margin:"auto",border:"1px solid #262626"}}><PostCard /></div>
-            <MessageSearch />
+           <div style={{display: followersCount || followingCount ? "block" : "none"}}> <SideDrawer /></div>
+            <div style={{width:"660px", paddingTop:"20px",paddingBottom:"20px", margin:"auto",border:"1px solid #262626", backgroundColor:"#121212"}}><PostCard /></div>
+            {/* <MessageSearch /> */}
           </div>
         </InfiniteScroll>
       </Box>

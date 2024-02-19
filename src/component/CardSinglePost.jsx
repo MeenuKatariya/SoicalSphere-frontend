@@ -19,17 +19,18 @@ import { useNavigate } from "react-router-dom";
 
 const CardSinglePost = ({ posts }) => {
   const { user, allPost, setAllPost } = useContext(LoginContext);
-  const { decode: { id: loggedInUserId = "" } = {}, token = "" } = user || {};
+  const { decoded: { id: loggedInUserId = "" } = {}, token = "" } = user || {};
   const {
     caption = "",
     comments: { count: commentsCount = 0, list: commentsList = [] } = {},
     post = "",
     likes: { count: likesCount = 0, list: likesList = [] } = {},
-    userId: { name = "", _id: userId = "", profilePicture ="" } = {},
+    userId: { name = "", _id: userId = "", profilePicture = "" } = {},
     timestamp = "",
     _id = "",
   } = posts || {};
-  const navigate= useNavigate()
+  console.log({ userId, loggedInUserId });
+  const navigate = useNavigate();
   // console.log(userId);
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
@@ -38,6 +39,7 @@ const CardSinglePost = ({ posts }) => {
   const month = date.toLocaleString("en-us", { month: "long" });
   const year = date.getFullYear();
   const dayOfMonth = date.getDate();
+
   const alreadyComment = commentsList.map((comment) => {
     const {
       createdBy: { _id: commentedUserId = "", name: userName = "" } = {},
@@ -62,7 +64,7 @@ const CardSinglePost = ({ posts }) => {
 
   const postLike = async (id) => {
     const updatedAllPosts = [...allPost];
-    const { decode: { id: loggedInUserId = "" } = {} } = user || {};
+    const { decoded: { id: loggedInUserId = "" } = {} } = user || {};
     const clickedPostIndex = updatedAllPosts.findIndex(
       ({ _id: postId }) => id === postId
     );
@@ -92,7 +94,7 @@ const CardSinglePost = ({ posts }) => {
 
   const postComment = async (id) => {
     const updatedAllPosts = [...allPost];
-    const { decode: { id: loggedInUserId = "" } = {}, decode = {} } =
+    const { decoded: { id: loggedInUserId = "" } = {}, decoded = {} } =
       user || {};
     const clickedPostIndex = updatedAllPosts.findIndex(
       ({ _id: postId }) => id === postId
@@ -115,7 +117,7 @@ const CardSinglePost = ({ posts }) => {
         updatedAllPosts[clickedPostIndex] || {};
       updatedAllPosts[clickedPostIndex].comments.list = [
         ...commentsList,
-        { createdBy: { ...decode, _id: loggedInUserId }, comment },
+        { createdBy: { ...decoded, _id: loggedInUserId }, comment },
       ];
       updatedAllPosts[clickedPostIndex].comments.count =
         commentsList.length + 1;
@@ -128,14 +130,14 @@ const CardSinglePost = ({ posts }) => {
 
   const postDelete = async (id) => {
     const updatedAllPosts = [...allPost];
-    const { decode: { id: loggedInUserId = "" } = {}, decode = {} } =
+    const { decoded: { id: loggedInUserId = "" } = {}, decoded = {} } =
       user || {};
     const clickedPostIndex = updatedAllPosts.findIndex(
       ({ _id: postId }) => id === postId
     );
 
     try {
-      const data = await fetch("http://localhost:5000/deletePost", {
+      const data = await fetch("http://localhost:5000/post/deletePost", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -153,14 +155,14 @@ const CardSinglePost = ({ posts }) => {
 
   const deleteComment = async (id) => {
     const updatedAllPosts = [...allPost];
-    const { decode: { id: loggedInUserId = "" } = {}, decode = {} } =
+    const { decoded: { id: loggedInUserId = "" } = {}, decoded = {} } =
       user || {};
     const clickedPostIndex = updatedAllPosts.findIndex(
       ({ _id: postId }) => id === postId
     );
 
     try {
-      const data = await fetch("http://localhost:5000/deleteComment", {
+      const data = await fetch("http://localhost:5000/post/deleteComment", {
         method: "POST",
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -185,7 +187,7 @@ const CardSinglePost = ({ posts }) => {
 
   const postDislike = async (id) => {
     const updatedAllPosts = [...allPost];
-    const { decode: { id: loggedInUserId = "" } = {} } = user || {};
+    const { decoded: { id: loggedInUserId = "" } = {} } = user || {};
     const clickedPostIndex = updatedAllPosts.findIndex(
       ({ _id: postId }) => id === postId
     );
@@ -214,6 +216,7 @@ const CardSinglePost = ({ posts }) => {
     }
   };
 
+  console.log(alreadyComment);
   return (
     <div>
       <div
@@ -221,7 +224,7 @@ const CardSinglePost = ({ posts }) => {
           border: "1px solid #CCD0D5",
           padding: "10px",
           borderRadius: "5px",
-          cursor:"pointer"
+          cursor: "pointer",
         }}
       >
         <Modal
@@ -273,13 +276,15 @@ const CardSinglePost = ({ posts }) => {
                           <Typography>{userComment.comment}</Typography>
                         }
                       />
-                      <DeleteOutlineIcon
-                        onClick={() => {
-                          setCommentModal(false);
-                          deleteComment(_id);
-                        }}
-                        style={{ paddingTop: "25px" }}
-                      />
+                      {userComment.commentedUserId == loggedInUserId ? (
+                        <DeleteOutlineIcon
+                          onClick={() => {
+                            setCommentModal(false);
+                            deleteComment(_id);
+                          }}
+                          style={{ paddingTop: "25px" }}
+                        />
+                      ) : null}
                     </div>
                   );
                 })
@@ -292,7 +297,6 @@ const CardSinglePost = ({ posts }) => {
           </Box>
         </Modal>
 
-        
         <Card
           key={_id}
           sx={{
@@ -302,12 +306,11 @@ const CardSinglePost = ({ posts }) => {
             boxShadow:
               "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px",
             paddingBottom: "25px",
-
           }}
-          onClick={()=> navigate(`/profile/${userId}`)}
         >
           <CardHeader
-            avatar={<Avatar alt={firstLetter} src={profilePicture}   ></Avatar>}
+            onClick={() => navigate(`/profile/${userId}`)}
+            avatar={<Avatar alt={firstLetter} src={profilePicture}></Avatar>}
             // action={
             //   <IconButton
             //     sx={{ color: "#f5f5f5" }}
@@ -356,45 +359,53 @@ const CardSinglePost = ({ posts }) => {
             </Typography>
           </div>
           <div className="cardIcon">
-            <div style={{display:"flex", width:"60px", justifyContent:"space-between"}}>
             <div
-              onClick={() => {
-                if (likesList.includes(loggedInUserId)) {
-                  postDislike(_id);
-                } else {
-                  postLike(_id);
-                }
+              style={{
+                display: "flex",
+                width: "60px",
+                justifyContent: "space-between",
               }}
             >
-              {likesList.includes(loggedInUserId) ? (
-                <FavoriteIcon sx={{ color: "red" }} />
-              ) : (
-                <FavoriteBorderSharpIcon sx={{ color: "#f5f5f5" }} />
-              )}
-            </div>
-            <div>
-              <FaRegCommentDots
+              <div
                 onClick={() => {
-                  if (commentsCount == 0) {
-                    setCommentModal(false);
+                  if (likesList.includes(loggedInUserId)) {
+                    postDislike(_id);
                   } else {
-                    setCommentModal(true);
+                    postLike(_id);
                   }
                 }}
-              />
+              >
+                {likesList.includes(loggedInUserId) ? (
+                  <FavoriteIcon sx={{ color: "red" }} />
+                ) : (
+                  <FavoriteBorderSharpIcon sx={{ color: "#f5f5f5" }} />
+                )}
+              </div>
+              <div>
+                <FaRegCommentDots
+                  onClick={() => {
+                    if (commentsCount == 0) {
+                      setCommentModal(false);
+                    } else {
+                      setCommentModal(true);
+                    }
+                  }}
+                />
+              </div>
             </div>
-            </div>
-            <div   style={{ display: loggedInUserId == userId ? "block" : "none" }}>
-            {/* <IconButton
+            <div
+              style={{ display: loggedInUserId == userId ? "block" : "none" }}
+            >
+              {/* <IconButton
                 sx={{ color: "#f5f5f5" }}
                 aria-label="settings"
               
               > */}
-                <DeleteOutlineIcon
-                  onClick={() => {
-                    postDelete(_id);
-                  }}
-                />
+              <DeleteOutlineIcon
+                onClick={() => {
+                  postDelete(_id);
+                }}
+              />
               {/* </IconButton> */}
             </div>
           </div>

@@ -44,7 +44,10 @@ export function LoginContextProvider({ children }) {
           `http://localhost:5000/post/allPost?start=${start}&count=${count}`
         );
         const res = await data.json();
-        setAllPost(res);
+        setAllPost((prevPosts) => {
+          
+          return [...prevPosts, ...res];
+        });
         // console.log(res);
         if (res.length === 0) {
           setHasMore(false);

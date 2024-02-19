@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
 const ProfileUser = ({ profileModal, setProfileModal }) => {
   const [loadingChat, setLoadingChat] = useState(false);
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
   });
   const [userNotLoggedInData, setUserNotLoggedInData] = useState({});
   const [userAllPost, setUserAllPost] = useState([]);
-  let countUserPost = 0;
+   const [countUserPost , setCountUserPost] = useState(0)
   const { user, setUser, setSelectedChat, chats, setChats } =
     useContext(LoginContext);
   const {
@@ -113,6 +114,8 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
           `http://localhost:5000/post/userPost/${idNotLoggedIn}`
         );
         const res = await data.json();
+        console.log(res)
+         setCountUserPost( res.length)
         setUserAllPost(res);
       } else {
         console.log("no");
@@ -120,6 +123,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
           `http://localhost:5000/post/userPost/${loggedInUserId}`
         );
         const res = await data.json();
+          setCountUserPost(res.length)
         setUserAllPost(res);
       }
     } catch (err) {
@@ -198,31 +202,11 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
       console.log(err);
     }
   };
+  console.log(countUserPost)
 
-  const accessChat = async (userId) => {
-    try {
-      setLoadingChat(true);
-      console.log(userId)
-      const data = await fetch("https://localhost:5000/chat", {
-        method: "POST",
-
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          token: token,
-        },
-        body:userId,
-      });
-
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-      setSelectedChat(data);
-      setLoadingChat(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <div
-      style={{ backgroundColor: "#121212", height: "100vh", color: "#f5f5f5" }}
+      style={{ backgroundColor: "#121212", color: "#f5f5f5" }}
     >
       <Navbar />
       <ModalProfileUpdate
@@ -239,15 +223,16 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
               gap: "80px",
               flexDirection: "column",
               width: "1200px",
+
               margin: "auto",
             }}
           >
-            <div style={{ width: "500px", margin: "auto", marginTop: "50px" }}>
+            <div style={{ width: "500px",  marginTop: "100px" }}>
               <div
                 style={{
                   display: "flex",
                   textAlign: "center",
-                  margin: "auto",
+                  // margin: "auto",
                   flexDirection: "row",
                   justifyContent: "space-between",
                   // border: "1px solid red",
@@ -328,7 +313,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                         Unfollow
                       </Button>
                     )}
-                    <Button
+                    {/* <Button
                       variant="text"
                       sx={{
                         // border: "1px solid #f5f5f5",
@@ -345,7 +330,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
                       }
                     >
                       Message
-                    </Button>
+                    </Button> */}
                   </div>
                   <div
                     style={{
@@ -402,7 +387,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
             margin: "auto",
           }}
         >
-          <div style={{ width: "500px", margin: "auto", marginTop: "50px" }}>
+          <div style={{ width: "500px", marginTop: "100px" }}>
             <div
               style={{
                 display: "flex",

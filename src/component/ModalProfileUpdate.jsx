@@ -84,11 +84,12 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
         body: JSON.stringify(updatedData),
       });
       const res = await data.json();
-      console.log(res)
-      localStorage.setItem("userInfo", JSON.stringify(res));
-      const updatedUser = {...user} || {};
-       updatedUser = { ...updatedUser, updatedData};
-       setUser(updatedUser)
+      // console.log(res)
+      // localStorage.setItem("userInfo", JSON.stringify(res));
+      // const updatedUser = {...user} || {};
+      //  updatedUser = { ...updatedUser, updatedData};
+      //  setUser(updatedUser)
+      setUser({ token: res.token, decoded: res.decoded });
 
     } catch (err) {
       console.log(err);
@@ -101,7 +102,7 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
       return;
     }
 
-    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+    if (pics.type === "image/jpeg" || pics.type === "image/png" ||  pics.type === "image/jpg") {
       const data = new FormData();
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
@@ -238,7 +239,7 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
                   width="20"
                   //   left="50"
                   color="#f5f5f5"
-                  ariaLabel="circles-loading"
+                  
                   visible={picloading}
                 />
               </div>
