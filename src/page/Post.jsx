@@ -50,7 +50,7 @@ const Post = () => {
           endMessage={<p  style={{fontSize:"16px", color:"#f2f2f2", fontStyle:"italic"}}>No more posts to load</p>}
         >
           <div style={{display:"flex", justifyContent:"space-between", width:"100%", flexDirection:"row",}}>
-           <div style={{display: followersCount || followingCount ? "block" : "none"}}> <SideDrawer /></div>
+           <div style={{display: followersCount > 0 || followingCount > 0 ? "block" : "none"}}> <SideDrawer /></div>
             <div style={{width:"660px", paddingTop:"20px",paddingBottom:"20px", margin:"auto",border:"1px solid #262626", backgroundColor:"#121212"}}><PostCard /></div>
             {/* <MessageSearch /> */}
           </div>

@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import { Box, Card, CardMedia, Typography } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import { Box, Typography } from "@mui/material";
+import PostUserModal from "./postUserModal";
 
 const UserPostGrid = ({ userAllPost }) => {
+  const [postModal, setPostModal] = useState(false)
+
+  
   return (
+    <div> 
     <Box
       sx={{
         flexGrow: 1,
@@ -18,7 +24,7 @@ const UserPostGrid = ({ userAllPost }) => {
         {userAllPost.length ? (
           userAllPost?.map((post, index) => {
             return (
-              <div style={{height:"100%", width:"100%"}} key={`${post}${index}`}>
+              <div style={{height:"100%", width:"100%"}} key={`${post}${index}`}  onClick={()=> setPostModal(true)} >
                 <div style={{height:"350px", width:"350px",padding:"10px", border:"1px solid #262626", boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px"}}>
                 <img style={{width:"100%", height:"100%"}} src={post.post}  />
               </div>
@@ -32,6 +38,8 @@ const UserPostGrid = ({ userAllPost }) => {
         )}
       </div>
     </Box>
+     {/* <PostUserModal  postModal={postModal} setPostModal = {setPostModal} /> */}
+    </div>
   );
 };
 

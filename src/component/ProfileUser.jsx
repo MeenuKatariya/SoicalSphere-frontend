@@ -70,7 +70,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
     } = {},
     token = "",
   } = user || {};
-
+  console.log(user)
   const firstLetter = name.charAt(0).toUpperCase();
   const nameCapital = name.charAt(0).toUpperCase() + name.slice(1);
   const id = window.location.pathname;
@@ -205,14 +205,14 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
   console.log(countUserPost)
 
   return (
-    <div
-      style={{ backgroundColor: "#121212", color: "#f5f5f5" }}
-    >
+    <>
+     
       <Navbar />
       <ModalProfileUpdate
         editProfileModal={editProfileModal}
         setEditProfileModal={setEditProfileModal}
       />
+       <div style={{backgroundColor:"#121212", color:"#f5f5f5" , paddingBottom:"50px"} }>
 
       {idNotLoggedIn !== loggedInUserId ? (
         userNotLoggedInData && (
@@ -223,7 +223,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
               gap: "80px",
               flexDirection: "column",
               width: "1200px",
-
+             backgroundColor:"#121212",
               margin: "auto",
             }}
           >
@@ -509,8 +509,10 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
           </div>
         </Box>
       )}
-    </div>
+      </div>
+     </>
   );
+ 
 };
 
 export default ProfileUser;

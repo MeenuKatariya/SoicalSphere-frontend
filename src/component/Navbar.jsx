@@ -100,8 +100,9 @@ const Navbar = () => {
               <ListItemButton>
                 <ListItemText
                   onClick={() => {
-                    setModalProfileLogout(false);
                     navigate(`/profile/${loggedInUserId}`);
+                    setModalProfileLogout(false);
+                  
                   }}
                   primary="Profile"
                   sx={{ cursor: "pointer", textAlign: "center" }}
@@ -153,7 +154,7 @@ const Navbar = () => {
           </div>
 
           <div className="socialNavbar">
-            <div className="messageIcon">
+            {/* <div className="messageIcon">
               <Tooltip arrow title="Message">
                 <IconButton>
                   <SendIcon
@@ -162,7 +163,7 @@ const Navbar = () => {
                   />
                 </IconButton>
               </Tooltip>
-            </div>
+            </div> */}
             <div
               className="messageIcon"
               onClick={() => {
