@@ -18,18 +18,8 @@ import { Circles } from "react-loader-spinner";
 const PostCard = () => {
   const { allPost, getPost, hasMore } = useContext(LoginContext);
   return (
-    <div style={{ overflow: "hidden", marginLeft:"82px" }}>
+    <div  className="cardShow">
       <div id="scrollableDiv" className="containerCardPost">
-        {/* <InfiniteScroll 
-         dataLength={allPost.length}
-         next={getPost}
-         hasMore={hasMore}
-         loader={<h4>Loading...</h4>}
-         height={820}
-         endMessage={<p>No more posts to load</p>}
-
-         
-        > */}
         <div className="cardPost">
           {allPost.length ? (
             allPost.map((posts = {}, id = "") => {
@@ -48,8 +38,6 @@ const PostCard = () => {
               Upload Post
             </div>
           )}
-
-         
         </div>
       </div>
     </div>

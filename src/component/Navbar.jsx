@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
-
+import { RxHamburgerMenu } from "react-icons/rx";
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -27,16 +27,15 @@ import ProfileUser from "./ProfileUser";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../context/loginContext";
 import SearchUser from "./SearchUser";
-import ChatBox from "./ChatBox";
-
 
 const Navbar = () => {
   const [createPostModal, setCreatePostModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const { user, setUser } = useContext(LoginContext);
-  
+  const [hamburger, setHamburger] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchHamburger, setSearchHamburger] = useState(false);
 
   const [debounceTimer, setDebounceTimer] = useState(null);
   const {
@@ -56,7 +55,7 @@ const Navbar = () => {
 
   const searchApi = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const data = await fetch(
         `http://localhost:5000/user?search=${searchInput}`,
         {
@@ -76,65 +75,68 @@ const Navbar = () => {
 
   return (
     <div>
-      <Modal
-        open={modalProfileLogout}
-        sx={{
-          width: "100px",
-          height: "100x",
-          left: "92%",
-          top: "8%",
-          border: "none",
-        }}
-        onClose={() => setModalProfileLogout(false)}
-      >
-        <Box
-          sx={{
-            bgcolor: "#262626",
-            color: "#f5f5f5",
-            textAlign: "center",
-            borderRadius: "5px",
-          }}
-        >
-          <List sx={{ textAlign: "center" }}>
-            <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemText
+      <Box className="Navbar">
+        <div className="textSocial">
+          <div
+            className="SocialSphereText"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/post")}
+          >
+            Social Sphere
+          </div>
+          <div className="hamburger1">
+            <RxHamburgerMenu
+              style={{ fontSize: "25px" }}
+              onClick={() => setHamburger(true)}
+            />
+            {hamburger ? (
+              <div className="hamburger">
+                <div
+                  className="burger burger1"
+                  onClick={() => setSearchHamburger(true)}
+                >
+                  Search
+                </div>
+
+                <Divider />
+                <div
+                  className=" burger burger2"
+                  onClick={() => {
+                    handleOpen();
+                    setHamburger(false);
+                  }}
+                >
+                  {" "}
+                  Create Post
+                </div>
+                <Divider />
+                <div
+                  className=" burger burger3"
                   onClick={() => {
                     navigate(`/profile/${loggedInUserId}`);
                     setModalProfileLogout(false);
-                  
                   }}
-                  primary="Profile"
-                  sx={{ cursor: "pointer", textAlign: "center" }}
-                />
-              </ListItemButton>
-            </ListItem>
-            <Divider style={{ backgroundColor: "#262626" }} />
-            <ListItem disablePadding>
-              <ListItemButton component="a">
-                <ListItemText
+                >
+                  Profile
+                </div>
+                <Divider />
+                <div
+                  className=" burger burger3"
                   onClick={() => {
                     localStorage.removeItem("userInfo");
                     setModalProfileLogout(false);
                     setUser({ token: "", decoded: {} });
                     navigate("/");
                   }}
-                  style={{ cursor: "pointer", textAlign: "center" }}
                 >
-                  {" "}
                   Logout
-                </ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
-      </Modal>
-      <Box className="Navbar">
-        <div className="textSocial">
-          <div style={{ cursor: "pointer" }} onClick={() => navigate("/post")}>
-            Social Sphere
+                </div>
+                <Divider />
+              </div>
+            ) : null}
           </div>
         </div>
+
         <div className="NavbarOtherSearch">
           <div className="SearchInput">
             <input
@@ -143,7 +145,7 @@ const Navbar = () => {
                 setSearchInput(e.target.value);
                 clearTimeout(debounceTimer);
                 const newTimer = setTimeout(() => {
-                  searchApi()
+                  searchApi();
                 }, 300);
 
                 setDebounceTimer(newTimer);
@@ -151,19 +153,15 @@ const Navbar = () => {
               placeholder="Search..."
             />
             <SearchIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} />
+            <SearchUser
+              searchResult={searchResult}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              loading={loading}
+            />
           </div>
 
           <div className="socialNavbar">
-            {/* <div className="messageIcon">
-              <Tooltip arrow title="Message">
-                <IconButton>
-                  <SendIcon
-                    onClick={() => navigate("/chat")}
-                    sx={{ color: "#f5f5f5", cursor: "pointer" }}
-                  />
-                </IconButton>
-              </Tooltip>
-            </div> */}
             <div
               className="messageIcon"
               onClick={() => {
@@ -178,13 +176,72 @@ const Navbar = () => {
                 </IconButton>
               </Tooltip>
             </div>
-            <div className="messageIcon">
+            <div
+              className="messageIcons"
+              onClick={() => setModalProfileLogout(true)}
+            >
               <Tooltip arrow title="Profile">
                 <IconButton>
                   <AccountCircleIcon
-                    onClick={() => setModalProfileLogout(true)}
-                    sx={{ color: "#f5f5f5", cursor: "pointer" }}
+                    sx={{
+                      color: "#f5f5f5",
+                      cursor: "pointer",
+                      position: "absolute",
+                    }}
                   />
+                  <div
+                    style={{
+                      width: "80px",
+                      height: "80x",
+                      top: "30px",
+                      border: "none",
+                      position: "absolute",
+                      display: modalProfileLogout || null,
+                      display: !modalProfileLogout ? "none" : null,
+                    }}
+                    onClick={() => setModalProfileLogout(false)}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: "#262626",
+                        color: "#f5f5f5",
+                        textAlign: "center",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      <List sx={{ textAlign: "center" }}>
+                        <ListItem disablePadding>
+                          <ListItemButton>
+                            <ListItemText
+                              onClick={() => {
+                                navigate(`/profile/${loggedInUserId}`);
+                                setModalProfileLogout(false);
+                              }}
+                              primary="Profile"
+                              sx={{ cursor: "pointer", textAlign: "center" }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                        <Divider style={{ backgroundColor: "#262626" }} />
+                        <ListItem disablePadding>
+                          <ListItemButton component="a">
+                            <ListItemText
+                              onClick={() => {
+                                localStorage.removeItem("userInfo");
+                                setModalProfileLogout(false);
+                                setUser({ token: "", decoded: {} });
+                                navigate("/");
+                              }}
+                              style={{ cursor: "pointer", textAlign: "center" }}
+                            >
+                              {" "}
+                              Logout
+                            </ListItemText>
+                          </ListItemButton>
+                        </ListItem>
+                      </List>
+                    </Box>
+                  </div>
                 </IconButton>
               </Tooltip>
             </div>
@@ -195,8 +252,32 @@ const Navbar = () => {
         handleOpen={createPostModal}
         handleClose={setCreatePostModal}
       />
-
-      <SearchUser searchResult={searchResult} searchInput={searchInput}  setSearchInput={setSearchInput} loading={loading} />
+      {/* <div style={{}}>
+           {
+                   searchHamburger?  <div className="SearchInput">
+                   <input
+                     value={searchInput}
+                     onChange={(e) => {
+                       setSearchInput(e.target.value);
+                       clearTimeout(debounceTimer);
+                       const newTimer = setTimeout(() => {
+                         searchApi();
+                       }, 300);
+       
+                       setDebounceTimer(newTimer);
+                     }}
+                     placeholder="Search..."
+                   />
+                   <SearchIcon sx={{ color: "#f5f5f5", cursor: "pointer" }} />
+                   <SearchUser
+                     searchResult={searchResult}
+                     searchInput={searchInput}
+                     setSearchInput={setSearchInput}
+                     loading={loading}
+                   />
+                 </div> : null
+                }
+           </div> */}
     </div>
   );
 };

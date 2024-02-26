@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { Typography, Grid, Button, Alert, Snackbar } from "@mui/material";
 import "../css/signup.css";
 import { TextField, Box } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useNavigate } from "react-router-dom";
-
-import { LoginContext } from "../context/loginContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,8 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Signup = () => {
-  const [activeForm, setActiveForm] = useState("signup");
-
+  const [activeForm, setActiveForm] = useState("signup"); 
   const classes = useStyles();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -93,6 +90,8 @@ const Signup = () => {
     setSignupExistAlert(false);
   };
 
+  // SignUp api
+
   const handleSignup = async (state) => {
     try {
       const userData = {
@@ -110,7 +109,6 @@ const Signup = () => {
         body: JSON.stringify(userData),
       });
       const res = await data.json();
-      // console.log(res);
       localStorage.setItem("userInfo", JSON.stringify(res));
 
       if (data.status == 200) {
@@ -126,6 +124,8 @@ const Signup = () => {
       console.log(err);
     }
   };
+
+  // login api
 
   const handleLogin = async () => {
     try {
@@ -256,13 +256,37 @@ const Signup = () => {
             >
               <Grid>
                 <div className="form">
-                  <Typography
-                    variant="h4"
-                    align="left"
-                    style={{ fontWeight: "520", marginBottom: "7px" }}
-                  >
-                    Sign Up
-                  </Typography>
+                  <div className="mobileSigupSignin">
+                    <Typography
+                      fontSize={{
+                        lg: 30,
+                        md: 20,
+                        sm: 15,
+                        xs: 22,
+                      }}
+                      className="sizeFont"
+                      align="left"
+                    >
+                      Sign Up
+                    </Typography>
+                    <Typography
+                      fontSize={{
+                        lg: 30,
+                        md: 20,
+                        sm: 15,
+                        xs: 22,
+                      }}
+                      sx={{ color: "#3b82f680" }}
+                      onClick={() => {
+                        setActiveForm(
+                          activeForm == "signup" ? "login" : "signup"
+                        );
+                      }}
+                      className="mobileSignIn"
+                    >
+                      Sign In
+                    </Typography>
+                  </div>
                   <Box sx={{ "& > :not(style)": { marginBottom: 1 } }}>
                     <TextField
                       InputLabelProps={{

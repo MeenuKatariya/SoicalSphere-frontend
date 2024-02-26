@@ -212,7 +212,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
         editProfileModal={editProfileModal}
         setEditProfileModal={setEditProfileModal}
       />
-       <div style={{backgroundColor:"#121212", color:"#f5f5f5" , paddingBottom:"50px"} }>
+       <div style={{backgroundColor:"#121212", color:"#f5f5f5" , paddingBottom:"50px", width:"100%"} }>
 
       {idNotLoggedIn !== loggedInUserId ? (
         userNotLoggedInData && (
@@ -227,7 +227,7 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
               margin: "auto",
             }}
           >
-            <div style={{ width: "500px",  marginTop: "100px" }}>
+            <div className="profileTopSection" >
               <div
                 style={{
                   display: "flex",
@@ -383,11 +383,13 @@ const ProfileUser = ({ profileModal, setProfileModal }) => {
             display: "flex",
             gap: "80px",
             flexDirection: "column",
-            width: "1200px",
+            // width: "1200px",
             margin: "auto",
+            paddingTop:"70px",
+            // border:"1px solid red"
           }}
         >
-          <div style={{ width: "500px", marginTop: "100px" }}>
+          <div className="profileTopSection">
             <div
               style={{
                 display: "flex",

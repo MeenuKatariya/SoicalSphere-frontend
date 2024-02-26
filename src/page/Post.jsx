@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from "react";
 import SideDrawer from "../component/SideDrawer";
 import { Box, Card, Divider } from "@mui/material";
 import PostCard from "../component/PostCard";
-import MessageSearch from "../component/MessageSearch";
 import { LoginContext } from "../context/loginContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
@@ -31,7 +30,7 @@ const Post = () => {
   
 
   return (
-    <div className="postMainDiv">
+    <div className="postMainDiv" >
       <Navbar />
       <Box className="postBox" style={{ overflowY: "hidden", width:"100%", position:"relative" }}>
         <InfiniteScroll
@@ -40,7 +39,6 @@ const Post = () => {
           hasMore={hasMore}
           loader={<div style={{margin:'auto',marginTop:'10px', textAlign:"center", width:"40px"}}>
             <Circles  height="30"
-          border="1px solid red"
           width="30"
           marginLeft="50"
           color="#f5f5f5"
@@ -50,8 +48,8 @@ const Post = () => {
           endMessage={<p  style={{fontSize:"16px", color:"#f2f2f2", fontStyle:"italic"}}>No more posts to load</p>}
         >
           <div style={{display:"flex", justifyContent:"space-between", width:"100%", flexDirection:"row",}}>
-           <div style={{display: followersCount > 0 || followingCount > 0 ? "block" : "none"}}> <SideDrawer /></div>
-            <div style={{width:"660px", paddingTop:"20px",paddingBottom:"20px", margin:"auto",border:"1px solid #262626", backgroundColor:"#121212"}}><PostCard /></div>
+           <div style={{display: followersCount > 0 && followingCount > 0 ? "block" : "none" }}> <SideDrawer /></div>
+            <div className="postShow" ><PostCard /></div>
             {/* <MessageSearch /> */}
           </div>
         </InfiniteScroll>

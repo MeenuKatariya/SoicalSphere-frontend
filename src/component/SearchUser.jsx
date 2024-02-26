@@ -23,18 +23,8 @@ const SearchUser = ({
     <div
       className="scrollingFollowers"
       style={{
-        position: "absolute",
-        zIndex: "10",
-        left: "51.4%",
-        height: "300px",
-        width: "366px",
-        overflowX: "hidden",
-        overflowY: "scroll",
-        scrollBehavior: "smooth",
-        backgroundColor: "#262626",
         display: searchResult.length ? "block" : "none",
-        display: searchInput && searchResult ? "block" : "none",
-        borderRadius: "5px",
+        display: searchInput && searchResult ? "block" : "none"
       }}
     >
       {searchResult.length ? (

@@ -228,11 +228,10 @@ const CardSinglePost = ({ posts }) => {
         }}
       >
         <Modal
+        className="commentModals"
           sx={{
             top: 130,
-            width: "400px",
-            height: "400px",
-            margin: "auto",
+           
             bgcolor: "1px solid #262626",
           }}
           open={commentModal}
@@ -311,19 +310,7 @@ const CardSinglePost = ({ posts }) => {
           <CardHeader
             onClick={() => navigate(`/profile/${userId}`)}
             avatar={<Avatar alt={firstLetter} src={profilePicture}></Avatar>}
-            // action={
-            //   <IconButton
-            //     sx={{ color: "#f5f5f5" }}
-            //     aria-label="settings"
-            //     style={{ display: loggedInUserId == userId ? "block" : "none" }}
-            //   >
-            //     <DeleteOutlineIcon
-            //       onClick={() => {
-            //         postDelete(_id);
-            //       }}
-            //     />
-            //   </IconButton>
-            // }
+          
             sx={{
               textAlign: "left",
               paddingLeft: "0px",

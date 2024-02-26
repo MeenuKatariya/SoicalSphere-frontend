@@ -142,18 +142,14 @@ const PostCreate = ({ handleOpen, handleClose }) => {
         </Alert>
       </Snackbar>
       <Modal
-        sx={{
-          top: 130,
-          width: "700px",
-          margin: "auto",
-        }}
+        sx={{top:130}}
+        className= "modalCreatePost"
         open={handleOpen}
         onClose={() => {
           handleClose(false);
           setPostCreateSuccess(false);
         }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+     
       >
         <Box className="createPostModal">
           <Typography id="modal-modal-title" variant="h6" component="h2">

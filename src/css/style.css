@@ -1,43 +1,331 @@
-/* body{
-  background-color: #121212;
-} */
+@media only screen and (max-width: 700px) and (min-width: 300px) {
+  .textSocial {
+    padding-left: 0px;
+    font-size: 18px;
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .commentModals {
+    width: 150px;
+
+    height: 150px;
+  }
+  .createPostModal {
+    padding: 10px;
+    width: 410px;
+    text-align: center;
+    background-color: #262626;
+    color: #f5f5f5;
+  }
+
+  .modalCreatePost {
+    top: 30%;
+    width: 100px;
+    margin: auto;
+  }
+  .hamburger1 {
+    position: relative;
+  }
+
+  .hamburger {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: space-around;
+    flex-flow: column nowrap;
+    z-index: 10;
+    left: -70px;
+    text-align: center;
+    background-color: #262626;
+    padding: 10px;
+    /* border:1px solid green; */
+    position: absolute;
+    font-size: 18px;
+    border-radius: 5px;
+  }
+
+  .NavbarOtherSearch {
+    display: none;
+  }
+
+  .Navbar {
+    background-color: #121212;
+    color: #f5f5f5;
+    height: 50px;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 400px;
+    top: 0;
+    z-index: 1;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+      rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+      rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  }
+
+  .postShow {
+    width: 300px;
+    padding: 20px;
+    /* padding-bottom: 20px; */
+    margin: auto;
+    border: 1px solid #262626;
+    background-color: #121212;
+  }
+  .containerCardPost {
+    /* border:1px solid red; */
+    /* width: 300px; */
+    display: flex;
+    justify-content: center;
+  }
+  .cardShow {
+    overflow: hidden;
+    margin-left: 0px;
+  }
+  .profileTopSection {
+    width: 400px;
+    margin-top: 100px;
+    margin-left: 20px;
+  }
+  .editProfileModal{
+    top:20%;
+    left:10%
+  }
+}
+
+@media only screen and (max-width: 1024px) and (min-width: 600px) {
+  .SearchInput {
+    display: flex;
+    width: 250px;
+    height: 100%;
+    color: #f5f5f5;
+    gap: 5px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid #f5f5f5;
+
+    /* border: 1px solid green; */
+  }
+  .createPostModal {
+    padding: 10px;
+    height: 400px;
+    text-align: center;
+    background-color: #262626;
+    color: #f5f5f5;
+  }
+  .textSocial {
+    font-size: 20px;
+  }
+
+  .hamburger1 {
+    display: none;
+  }
+  .NavbarOtherSearch {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* border: 1px solid blue; */
+    width: 500px;
+  }
+  .scrollingFollowers {
+    position: absolute;
+    /* z-index: 10; */
+    /* // left: 51.4%; */
+    top: 57px;
+    height: 300px;
+    width: 250px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    background-color: #262626;
+
+    border-radius: 5px;
+  }
+  .Navbar {
+    background-color: #121212;
+    color: #f5f5f5;
+    height: 50px;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+      rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+      rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  }
+  .containerCardPost {
+    /* border:1px solid red; */
+    width: 500px;
+    display: flex;
+    justify-content: center;
+  }
+  .cardShow {
+    overflow: hidden;
+    margin-left: 82px;
+  }
+  .gripPostImage {
+    height: 250px;
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #262626;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  }
+  .profileTopSection {
+    width: 600px;
+    margin-top: 100px;
+    margin-left: 20px;
+  }
+  .editProfileModal{
+    top:20%;
+    left:10%
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .SearchInput {
+    display: flex;
+    width: 350px;
+    height: 100%;
+    color: #f5f5f5;
+    /* padding-left: 20px; */
+    gap: 5px;
+    /* border-radius: 6px; */
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid #f5f5f5;
+
+    /* border: 1px solid green; */
+    /* background-color: #f5f5f5f4; */
+  }
+  .profileTopSection {
+    width: 500px;
+    margin-top: 100px;
+    margin-left: 300px;
+  }
+  .containerCardPost {
+    /* border:1px solid red; */
+    width: 500px;
+    display: flex;
+    justify-content: center;
+  }
+  .gripPostImage {
+    height: 350px;
+    width: 350px;
+    padding: 10px;
+    border: 1px solid #262626;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  }
+  .cardShow {
+    overflow: hidden;
+    margin-left: 82px;
+  }
+
+  .commentModals {
+    width: 400px;
+
+    height: 400px;
+
+    margin: auto;
+  }
+
+  .postShow {
+    width: 660px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: auto;
+    border: 1px solid #262626;
+    background-color: #121212;
+  }
+
+  .createPostModal {
+    padding: 10px;
+    height: 400px;
+    text-align: center;
+    background-color: #262626;
+    color: #f5f5f5;
+  }
+  .hamburger1 {
+    display: none;
+  }
+  .textSocial {
+    /* border: 1px slid green; */
+    font-size: 20px;
+    font-weight: 500;
+    padding-left: 30px;
+  }
+  .NavbarOtherSearch {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* border: 1px solid blue; */
+    width: 800px;
+  }
+  .scrollingFollowers {
+    position: absolute;
+    /* z-index: 10; */
+    /* // left: 51.4%; */
+    top: 57px;
+    height: 300px;
+    width: 350px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    background-color: #262626;
+
+    border-radius: 5px;
+  }
+  .Navbar {
+    background-color: #121212;
+    color: #f5f5f5;
+    height: 50px;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+      rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+      rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  }
+  .editProfileModal{
+    top:200px;
+    left:40%
+  }
+}
 
 .postMainDiv {
   background-color: #121212;
   color: #f5f5f5;
-  height: 100vh;
+  /* height: 100vh; */
   width: 100%;
+  border: 1px solid red;
 }
 
-.Navbar {
-  background-color: #121212;
-  color: #f5f5f5;
-  position: sticky;
-  height: 50px;
-  text-align: center;
-  padding: 10px;
-  position: sticky;
-  padding-left: 30px;
-  padding-right: 30px;
-  /* width: 100%; */
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
-    rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-}
-.textSocial {
-  /* border: 1px solid green; */
-  font-size: 20px;
-  font-weight: 500;
-}
-.NavbarOtherSearch {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  /* border: 1px solid blue; */
-  width: 800px;
+.modalCreatePost {
+  top: 30%;
+  width: 700px;
+  margin: auto;
 }
 
 .socialNavbar {
@@ -45,29 +333,14 @@
   flex-direction: row;
   justify-content: space-evenly;
   /* border: 1px solid blue; */
-  width: 200px;
-  /* padding-right:30px ; */
-}
-
-.SearchInput {
-  display: flex;
-  width: 350px;
-  height: 100%;
-  color: #f5f5f5;
-  padding-left: 20px;
-  gap: 5px;
-  /* border-radius: 6px; */
-  padding: 8px;
-  position: relative;
-  
-  border-bottom: 1px solid #f5f5f5;
-
-  /* border: 1px solid green; */
-  /* background-color: #f5f5f5f4; */
+  width: 100px;
+  padding-right: 30px;
 }
 
 .SearchInput input {
   border: none;
+  position: relative;
+
   outline: none;
   width: 100%;
   font-size: 18px;
@@ -75,6 +348,7 @@
   /* background-color: #f6f6f6; */
   color: #f5f5f5;
   background-color: #121212;
+  /* margin: 5px; */
 }
 
 .messageIcon {
@@ -83,21 +357,24 @@
   height: 100%;
 }
 
+.messageIcons {
+  padding-top: 12px;
+  color: #f5f5f5;
+  height: 100%;
+  position: relative;
+}
+
 .hovericon:hover {
   border: 1px solid #f5f5f5;
 }
 
 .postBox {
-  width:100%;
+  width: 100%;
   text-align: center;
- 
+  /* border: 1px solid green; */
+  margin-top: 80px;
 }
-.containerCardPost {
-  /* border:1px solid red; */
-  width: 500px;
-  display: flex;
-  justify-content: center;
-}
+
 .cardPost {
   display: flex;
   flex-direction: column;
@@ -130,7 +407,7 @@
   padding-left: 6px;
 }
 .commentShowWrapper {
-  /* border:"1px solid red"; */
+  /* border:1px solid red"; */
   width: 400px;
   height: 400px;
   text-align: center;
@@ -163,14 +440,6 @@
   /* background-color: #f6f6f6; */
   color: #f5f5f5;
   background-color: #121212;
-}
-
-.createPostModal {
-  padding: 10px;
-  height: 400px;
-  text-align: center;
-  background-color: #262626;
-  color: #f5f5f5;
 }
 
 .ImageIcon {
@@ -225,4 +494,3 @@
 .scrollingFollowers::-webkit-scrollbar {
   display: none;
 }
-

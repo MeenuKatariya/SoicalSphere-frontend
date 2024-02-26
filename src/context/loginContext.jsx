@@ -4,9 +4,6 @@ export const LoginContext = createContext();
 
 export function LoginContextProvider({ children }) {
   const navigate = useNavigate();
-  const [selectedChat, setSelectedChat] = useState();
-  const [notification, setNotification] = useState([]);
-  const [chats, setChats] = useState();
   const [start, setStart] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const count = 5;
@@ -45,10 +42,8 @@ export function LoginContextProvider({ children }) {
         );
         const res = await data.json();
         setAllPost((prevPosts) => {
-          
           return [...prevPosts, ...res];
         });
-        // console.log(res);
         if (res.length === 0) {
           setHasMore(false);
           return;
@@ -81,12 +76,6 @@ export function LoginContextProvider({ children }) {
         setUser,
         getPost,
         hasMore,
-        selectedChat,
-        setSelectedChat,
-        notification,
-        setNotification,
-        chats,
-        setChats,
       }}
     >
       {children}

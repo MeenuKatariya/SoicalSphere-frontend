@@ -131,6 +131,7 @@ const ModalProfileUpdate = ({ editProfileModal, setEditProfileModal }) => {
         open={editProfileModal.boolean}
         onClose={() => setEditProfileModal({ boolean: false })}
         sx={{ top: "20%", left: "40%" }}
+        className="editProfileModal"
       >
         <Box
           sx={{
